@@ -25,12 +25,11 @@ public class ItemData {
         if (o == null || getClass() != o.getClass()) return false;
         ItemData itemData = (ItemData) o;
         return Objects.equals(id, itemData.id) &&
-                Objects.equals(name, itemData.name) &&
-                Objects.equals(photo, itemData.photo);
+                Objects.equals(name, itemData.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, photo);
+        return Objects.hash(id, name);
     }
 }

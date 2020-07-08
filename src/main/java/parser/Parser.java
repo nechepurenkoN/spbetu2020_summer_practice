@@ -58,7 +58,7 @@ public class Parser {
                 .getItems();
     }
 
-    public List<GroupFull> getGroupsByid(List<Integer> listOfGroupIds) throws ClientException, ApiException {
+    public List<GroupFull> getGroupsById(List<Integer> listOfGroupIds) throws ClientException, ApiException {
         return apiClient.groups().getById(userActor)
                 .groupIds(listOfGroupIds.stream().map(item -> String.valueOf(item)).collect(Collectors.toList()))
                 .execute();
@@ -79,7 +79,7 @@ public class Parser {
     public String getAvatarURL(Integer userId) throws ClientException, ApiException {
         List<Photo> profilePhotoList = getUserAvatars(userId);
         if (profilePhotoList.size() == 0)
-            return "default";
+            return "https://vk.com/images/camera_50.png";
         Photo avatarItself = profilePhotoList.get(profilePhotoList.size() - 1);
         return avatarItself.getSizes().get(0).getUrl().toString();
     }

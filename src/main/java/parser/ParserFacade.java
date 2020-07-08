@@ -23,11 +23,11 @@ public class ParserFacade {
         for (UserXtrCounters friend : friendList) {
             Thread.sleep(300);
             List<Integer> groupIdsList = parser.getUserCommunitiesIds(friend.getId(), 3);
-            List<GroupFull> groupList = parser.getGroupsByid(groupIdsList);
+            List<GroupFull> groupList = parser.getGroupsById(groupIdsList);
             ItemData[] groupNodeList = new ItemData[groupList.size()];
             int i = 0;
             for (GroupFull group : groupList) {
-                Thread.sleep(100);
+                Thread.sleep(300);
                 groupNodeList[i] = new ItemData(group.getId(), group.getName(), group.getPhoto50().toString());
                 i++;
             }
