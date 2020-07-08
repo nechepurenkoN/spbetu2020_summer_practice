@@ -42,6 +42,7 @@ abstract class BoardNode extends Board {
 
     protected int dy;
     protected int offsetX;
+    protected int offsetY;
 
     public void setNodes(ArrayList<GraphNode> lst) throws IOException {
         for (int i = 0; i < lst.size(); ++i) {
@@ -55,11 +56,11 @@ abstract class BoardNode extends Board {
 }
 
 class BoardUser extends BoardNode {
-
-    BoardUser() {
+    BoardUser(int userCount, int groupCount) {
         super();
-        super.dy = 110;
-        super.offsetX = 0;
+        dy = 110;
+        offsetX = 0;
+//        offsetY = Math.max(0, (groupCount-userCount)/2 * 60);
     }
 }
 
@@ -70,6 +71,7 @@ class BoardGroup extends BoardNode {
         super();
         super.dy = 60;
         super.offsetX = 0;
+        super.offsetY = 0;
     }
 }
 

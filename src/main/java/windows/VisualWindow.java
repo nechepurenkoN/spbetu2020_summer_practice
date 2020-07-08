@@ -13,7 +13,7 @@ import java.io.IOException;
 public class VisualWindow extends JDialog {
     private final GridBagLayout gbl = new GridBagLayout();
     private final GridBagConstraints consLayout = new GridBagConstraints();
-    private final BoardUser userBoard = new BoardUser();
+    private final BoardUser userBoard;
     private final BoardEdge edgeBoard = new BoardEdge();
     private final BoardGroup groupBoard = new BoardGroup();
     private final ButtonPanel buttonPanel = new ButtonPanel();
@@ -30,7 +30,8 @@ public class VisualWindow extends JDialog {
     private VisualWindow() throws IOException, InterruptedException, ClientException, ApiException {
         super();
         bip = new Bipartite(new ParserFacade().getMatchingDataList(Integer.valueOf(MainWindow.getInstance().getVkId())));
-        ImageIcon icon = new ImageIcon("res/icon.png");
+        userBoard = new BoardUser(bip.getFirstSide().size(), bip.getSecondSide().size());
+        ImageIcon icon = new ImageIcon("resources/icon.png");
         setModal(true);
         setTitle("Visualization");
         setIconImage(icon.getImage());
@@ -46,7 +47,7 @@ public class VisualWindow extends JDialog {
 
     private void setCustomSize() {
         Toolkit tk = Toolkit.getDefaultToolkit();
-        setBounds(tk.getScreenSize().width / 2 - 350, tk.getScreenSize().height / 2 - 100, 700, 900);
+        setBounds(tk.getScreenSize().width / 2 - 400, tk.getScreenSize().height / 2 - 400, 800, 900);
         setResizable(false);
     }
 
