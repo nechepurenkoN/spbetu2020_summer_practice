@@ -1,0 +1,4 @@
+/out/*
+/app.config
+/target/
+/.idea
