@@ -43,14 +43,8 @@ public class MainWindow extends JFrame {
         public void actionPerformed(ActionEvent e) {
             try {
                 VisualWindow.getInstance();
-            } catch (InterruptedException interruptedException) {
+            } catch (InterruptedException | ClientException | ApiException | IOException interruptedException) {
                 interruptedException.printStackTrace();
-            } catch (ClientException clientException) {
-                clientException.printStackTrace();
-            } catch (ApiException apiException) {
-                apiException.printStackTrace();
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
             }
         }
     }
@@ -122,7 +116,10 @@ class InputPanel extends JPanel {
     }
 
     public String getText(){
-        return inputLine.getText();
+        if (inputLine.getText().length() != 0) {
+            return inputLine.getText();
+        }
+        return "147946476";
     }
 }
 

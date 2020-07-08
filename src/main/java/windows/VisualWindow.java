@@ -8,7 +8,6 @@ import parser.ParserFacade;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 
 public class VisualWindow extends JDialog {
@@ -18,7 +17,7 @@ public class VisualWindow extends JDialog {
     private final BoardEdge edgeBoard = new BoardEdge();
     private final BoardGroup groupBoard = new BoardGroup();
     private final ButtonPanel buttonPanel = new ButtonPanel();
-    private Bipartite bip;
+    private final Bipartite bip;
     private static VisualWindow instance;
 
     public static VisualWindow getInstance() throws InterruptedException, ClientException, ApiException, IOException {
@@ -30,7 +29,7 @@ public class VisualWindow extends JDialog {
 
     private VisualWindow() throws IOException, InterruptedException, ClientException, ApiException {
         super();
-        bip = new Bipartite(new ParserFacade().getMatchingDataList(147946476));
+        bip = new Bipartite(new ParserFacade().getMatchingDataList(Integer.valueOf(MainWindow.getInstance().getVkId())));
         ImageIcon icon = new ImageIcon("res/icon.png");
         setModal(true);
         setTitle("Visualization");
@@ -63,7 +62,6 @@ public class VisualWindow extends JDialog {
         consLayout.ipady = userBoard.getHeight();
         gbl.setConstraints(userBoard, consLayout);
         add(userBoard);
-//        userBoard.setBackground(Color.BLUE);
     }
 
     private void setEdgeBoard() {
@@ -73,7 +71,6 @@ public class VisualWindow extends JDialog {
         consLayout.ipady = edgeBoard.getHeight();
         gbl.setConstraints(edgeBoard, consLayout);
         add(edgeBoard);
-//        edgeBoard.setBackground(Color.RED);
     }
 
     private void setGroupBoard() {
@@ -83,7 +80,6 @@ public class VisualWindow extends JDialog {
         consLayout.ipady = groupBoard.getHeight();
         gbl.setConstraints(groupBoard, consLayout);
         add(groupBoard);
-//        groupBoard.setBackground(Color.GREEN);
     }
 
     private void setButtonPanel() throws IOException {
@@ -94,34 +90,46 @@ public class VisualWindow extends JDialog {
         consLayout.ipady = buttonPanel.getHeight();
         gbl.setConstraints(buttonPanel, consLayout);
         add(buttonPanel);
-        buttonPanel.play.addActionListener((ActionEvent e) -> {
+        buttonPanel.draw.addActionListener((ActionEvent e) -> {
             try {
-                userBoard.setNodes(bip.getFirstSide());
-                groupBoard.setNodes(bip.getSecondSide());
-                edgeBoard.setEdges(bip);
+                this.drawBipartite();
             } catch (IOException ioException) {
                 ioException.printStackTrace();
             }
         });
-        buttonPanel.step.addActionListener((ActionEvent e) -> {
+        buttonPanel.maxMatching.addActionListener((ActionEvent e) -> {
             edgeBoard.showBipartite(bip);
         });
+        buttonPanel.erase.addActionListener((ActionEvent e) -> {
+            userBoard.erase();
+            edgeBoard.erase();
+            groupBoard.erase();
+        });
+    }
+
+    private void drawBipartite() throws IOException {
+        userBoard.setNodes(bip.getFirstSide());
+        groupBoard.setNodes(bip.getSecondSide());
+        edgeBoard.setEdges(bip);
     }
 }
 
 class ButtonPanel extends JPanel {
-    JButton step = new JButton("Step");
-    JButton play = new JButton("Play");
+    JButton maxMatching = new JButton("Max Matching");
+    JButton draw = new JButton("Draw");
+    JButton erase = new JButton("Erase");
 
     ButtonPanel() {
         super();
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         setPreferredSize(new Dimension(50, 10));
-        step.setBorder(new RoundedBorder(10));
-        play.setBorder(new RoundedBorder(10));
-        add(step);
+        draw.setBorder(new RoundedBorder(10));
+        maxMatching.setBorder(new RoundedBorder(10));
+        erase.setBorder(new RoundedBorder(10));
+        add(draw);
         add(Box.createHorizontalStrut(10));
-        add(play);
+        add(maxMatching);
+        add(Box.createHorizontalStrut(10));
+        add(erase);
     }
-
 }

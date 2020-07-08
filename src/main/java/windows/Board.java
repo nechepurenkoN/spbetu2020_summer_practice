@@ -41,12 +41,17 @@ abstract class BoardNode extends Board {
     }
 
     protected int dy;
+    protected int offsetX;
 
-
-    public void erase() {
-        super.erase();
+    public void setNodes(ArrayList<GraphNode> lst) throws IOException {
+        for (int i = 0; i < lst.size(); ++i) {
+            Image img = Board.getImageFromURL(lst.get(i).getItemData().photo);
+            if (img != null) {
+                Graphics g = getGraphics();
+                g.drawImage(img, offsetX, i * dy, null);
+            }
+        }
     }
-
 }
 
 class BoardUser extends BoardNode {
@@ -54,21 +59,9 @@ class BoardUser extends BoardNode {
     BoardUser() {
         super();
         super.dy = 110;
-    }
-
-    public void setNodes(ArrayList<GraphNode> lst) throws IOException {
-        for (int i = 0; i < lst.size(); ++i) {
-            System.out.println(lst.get(i).getItemData().photo);
-            Image img = Board.getImageFromURL(lst.get(i).getItemData().photo);
-            if (img != null) {
-                Graphics g = getGraphics();
-                System.out.println(g == null);
-                g.drawImage(img, 50, i * dy, null);
-            }
-        }
+        super.offsetX = 0;
     }
 }
-
 
 class BoardGroup extends BoardNode {
     private final int r = 50;
@@ -76,19 +69,8 @@ class BoardGroup extends BoardNode {
     BoardGroup() {
         super();
         super.dy = 60;
+        super.offsetX = 0;
     }
-
-    public void setNodes(ArrayList<GraphNode> lst) throws IOException {
-        for (int i = 0; i < lst.size(); ++i) {
-            System.out.println(lst.get(i).getItemData().toString());
-            Image img = Board.getImageFromURL(lst.get(i).getItemData().photo);
-            if (img != null) {
-                Graphics g = getGraphics();
-                g.drawImage(img, 0, i * dy, null);
-            }
-        }
-    }
-
 }
 
 class BoardEdge extends Board {
