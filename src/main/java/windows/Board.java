@@ -59,7 +59,7 @@ class BoardUser extends BoardNode {
     BoardUser(int userCount, int groupCount) {
         super();
         dy = 110;
-        offsetX = 0;
+        offsetX = 50;
 //        offsetY = Math.max(0, (groupCount-userCount)/2 * 60);
     }
 }
@@ -69,9 +69,9 @@ class BoardGroup extends BoardNode {
 
     BoardGroup() {
         super();
-        super.dy = 60;
-        super.offsetX = 0;
-        super.offsetY = 0;
+        dy = 60;
+        offsetX = 0;
+        offsetY = 0;
     }
 }
 
