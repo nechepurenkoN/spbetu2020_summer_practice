@@ -43,7 +43,7 @@ public class MainWindow extends JFrame {
         public void actionPerformed(ActionEvent e) {
             try {
                 VisualWindow.getInstance();
-            } catch (InterruptedException | ClientException | ApiException | IOException interruptedException) {
+            } catch (InterruptedException | ClientException | ApiException interruptedException) {
                 interruptedException.printStackTrace();
             }
         }
