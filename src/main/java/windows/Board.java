@@ -51,9 +51,13 @@ abstract class BoardNode extends Board {
             Image img = Board.getImageFromURL(lst.get(i).getItemData().photo);
             if (img != null) {
                 Graphics g = getGraphics();
-                System.out.println(i * dx + offsetX);
-                System.out.println(offsetY);
                 g.drawImage(img, i * dx + offsetX, offsetY, null);
+                if (this instanceof BoardUser){
+                    Font font = new Font(Font.DIALOG, Font.BOLD, 12);
+                    String name = lst.get(i).getItemData().name;
+                    g.setFont(font);
+                    g.drawString(name, i * dx + offsetX - (g.getFontMetrics().stringWidth(name) - 50)/2, offsetY + 63);
+                }
             }
         }
     }
@@ -63,7 +67,7 @@ class BoardUser extends BoardNode {
     BoardUser(Bipartite bip) {
         super();
         dx = 110;
-        offsetY = 50;
+        offsetY = 20;
         offsetX = Math.max(0, (bip.getSecondSide().size() * dx - bip.getFirstSide().size() * dx) / 2 + (width - bip.getSecondSide().size() * dx) / 2);
     }
 }
