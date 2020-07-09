@@ -13,25 +13,26 @@ import java.io.IOException;
 public class VisualWindow extends JDialog {
     private final GridBagLayout gbl = new GridBagLayout();
     private final GridBagConstraints consLayout = new GridBagConstraints();
-    private final BoardEdge edgeBoard = new BoardEdge();
     private final ButtonPanel buttonPanel = new ButtonPanel();
     private final BoardUser userBoard;
     private final BoardGroup groupBoard;
+    private final BoardEdge edgeBoard;
     private final Bipartite bip;
 
 
-    VisualWindow() throws InterruptedException, ClientException, ApiException {
+    VisualWindow() throws InterruptedException, ClientException, ApiException, IOException {
         super();
         bip = new Bipartite(new ParserFacade().getMatchingDataList(Integer.valueOf(MainWindow.getInstance().getVkId())));
         userBoard = new BoardUser(bip);
         groupBoard = new BoardGroup(bip);
+        edgeBoard = new BoardEdge(bip, userBoard,groupBoard);
         ImageIcon icon = new ImageIcon("resources/icon.png");
         setModal(true);
         setTitle("Visualization");
         setIconImage(icon.getImage());
+        setCustomSize();
         setDefaultCloseOperation(HIDE_ON_CLOSE);
         setBackground(Color.lightGray);
-        setCustomSize();
         setUserBoard();
         setEdgeBoard();
         setGroupBoard();
@@ -89,27 +90,16 @@ public class VisualWindow extends JDialog {
         gbl.setConstraints(buttonPanel, consLayout);
         add(buttonPanel);
         buttonPanel.draw.addActionListener((ActionEvent e) -> {
-            try {
-                this.drawBipartite();
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            }
         });
         buttonPanel.maxMatching.addActionListener((ActionEvent e) -> {
-            edgeBoard.drawBipartite(bip, userBoard, groupBoard);
+            edgeBoard.setMaxMatching();
+            edgeBoard.repaint();
         });
         buttonPanel.erase.addActionListener((ActionEvent e) -> {
-            userBoard.erase();
-            edgeBoard.erase();
-            groupBoard.erase();
+            edgeBoard.setDefault();
+            edgeBoard.repaint();
         });
         buttonPanel.step.addActionListener((ActionEvent e) ->{});
-    }
-
-    private void drawBipartite() throws IOException {
-        userBoard.setNodes(bip.getFirstSide());
-        groupBoard.setNodes(bip.getSecondSide());
-        edgeBoard.setEdges(bip, userBoard, groupBoard);
     }
 }
 
