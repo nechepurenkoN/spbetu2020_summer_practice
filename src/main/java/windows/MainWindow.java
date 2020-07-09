@@ -42,7 +42,7 @@ public class MainWindow extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             try {
-                VisualWindow.getInstance();
+                new VisualWindow();
             } catch (InterruptedException | ClientException | ApiException interruptedException) {
                 interruptedException.printStackTrace();
             }

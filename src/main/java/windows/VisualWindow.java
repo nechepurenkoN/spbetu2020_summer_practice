@@ -18,16 +18,9 @@ public class VisualWindow extends JDialog {
     private final BoardUser userBoard;
     private final BoardGroup groupBoard;
     private final Bipartite bip;
-    private static VisualWindow instance;
 
-    public static VisualWindow getInstance() throws InterruptedException, ClientException, ApiException {
-        if (instance == null)
-            instance = new VisualWindow();
-        instance.setVisible(true);
-        return instance;
-    }
 
-    private VisualWindow() throws InterruptedException, ClientException, ApiException {
+    VisualWindow() throws InterruptedException, ClientException, ApiException {
         super();
         bip = new Bipartite(new ParserFacade().getMatchingDataList(Integer.valueOf(MainWindow.getInstance().getVkId())));
         userBoard = new BoardUser(bip);
@@ -44,11 +37,12 @@ public class VisualWindow extends JDialog {
         setGroupBoard();
         setButtonPanel();
         setLayout(gbl);
+        setVisible(true);
     }
 
     private void setCustomSize() {
         Toolkit tk = Toolkit.getDefaultToolkit();
-        setBounds(tk.getScreenSize().width / 2 - 450, tk.getScreenSize().height / 2 - 250, 900, 700);
+        setBounds(tk.getScreenSize().width / 2 - 475, tk.getScreenSize().height / 2 - 300, 950, 700);
         setResizable(false);
     }
 
@@ -109,6 +103,7 @@ public class VisualWindow extends JDialog {
             edgeBoard.erase();
             groupBoard.erase();
         });
+        buttonPanel.step.addActionListener((ActionEvent e) ->{});
     }
 
     private void drawBipartite() throws IOException {
@@ -119,8 +114,9 @@ public class VisualWindow extends JDialog {
 }
 
 class ButtonPanel extends JPanel {
-    JButton maxMatching = new JButton("Max Matching");
     JButton draw = new JButton("Draw");
+    JButton step = new JButton("Step");
+    JButton maxMatching = new JButton("Max Matching");
     JButton erase = new JButton("Erase");
 
     ButtonPanel() {
@@ -128,9 +124,12 @@ class ButtonPanel extends JPanel {
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         setPreferredSize(new Dimension(50, 10));
         draw.setBorder(new RoundedBorder(10));
+        step.setBorder(new RoundedBorder(10));
         maxMatching.setBorder(new RoundedBorder(10));
         erase.setBorder(new RoundedBorder(10));
         add(draw);
+        add(Box.createHorizontalStrut(10));
+        add(step);
         add(Box.createHorizontalStrut(10));
         add(maxMatching);
         add(Box.createHorizontalStrut(10));

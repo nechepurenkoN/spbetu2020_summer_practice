@@ -13,7 +13,7 @@ import java.net.URL;
 import java.util.ArrayList;
 
 abstract public class Board extends JPanel {
-    protected int width = 900;
+    protected int width = 950;
 
     Board(int h) {
         super();
