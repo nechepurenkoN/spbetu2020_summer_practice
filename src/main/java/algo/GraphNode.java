@@ -1,6 +1,7 @@
 package algo;
 
 import parser.ItemData;
+import utils.Mediator;
 
 import java.util.Objects;
 
@@ -11,8 +12,8 @@ public class GraphNode {
         this.data = data;
     }
 
-    public Boolean accept(Visitor visitor) {
-        return visitor.visit(this);
+    public Boolean accept(Visitor visitor, Mediator mediator) {
+        return visitor.visit(this, mediator);
     }
 
     public String toString() {

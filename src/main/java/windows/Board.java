@@ -2,15 +2,10 @@ package windows;
 
 import algo.Bipartite;
 import algo.Edge;
-import algo.GraphNode;
-import parser.ItemData;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 abstract public class Board extends JPanel {
     protected int width = 950;
@@ -37,10 +32,6 @@ abstract class BoardNode extends Board {
     protected int offsetX;
     protected BufferImagesUsers imagesUsers;
     protected BufferImagesGroups imagesGroups;
-
-    public void setNodes(ArrayList<GraphNode> lst, Graphics g) {
-
-    }
 }
 
 class BoardUser extends BoardNode {
@@ -92,71 +83,6 @@ class BoardGroup extends BoardNode {
     }
 }
 
-class BoardEdge extends Board {
-    BoardUser userBoard;
-    BoardGroup groupBoard;
-    ArrayList<DrawableEdge> edges = new ArrayList<>();
-
-    BoardEdge(Bipartite b, BoardUser ub, BoardGroup gb) {
-        super(300);
-        userBoard = ub;
-        groupBoard = gb;
-        bipartite = b;
-        for (Edge edge : bipartite.getEdges()) {
-            edges.add(new DrawableEdge(edge, Color.BLACK));
-        }
-    }
-
-    public void setDefault() {
-        for (Edge edge1 : bipartite.getMaxMatching()) {
-            for (DrawableEdge edge2 : edges) {
-                if (edge2.equals(edge1)) {
-                    edge2.color = Color.BLACK;
-                }
-            }
-        }
-    }
-
-    public void setMaxMatching() {
-        for (Edge edge1 : bipartite.getMaxMatching()) {
-            for (DrawableEdge edge2 : edges) {
-                if (edge2.equals(edge1)) {
-                    edge2.color = Color.RED;
-                }
-            }
-        }
-    }
-
-    private void drawEdges(Graphics g) {
-        for (DrawableEdge edge : edges) {
-            int ind_user = findIndex(bipartite.getFirstSide(), edge.getFirstNode().getItemData().id);
-            int ind_group = findIndex(bipartite.getSecondSide(), edge.getSecondNode().getItemData().id);
-            g.setColor(edge.color);
-            if (g.getColor() == Color.RED)
-                System.out.println(edge.toString());
-            for (int i = 0; i < 3; ++i)
-                g.drawLine(ind_user * userBoard.dx + 25 + userBoard.offsetX + i, 0, ind_group * groupBoard.dx + 25 + groupBoard.offsetX + i, 300);
-        }
-        System.out.println(edges.size());
-    }
-
-    private int findIndex(ArrayList<GraphNode> lst, int id) {
-        for (int i = 0; i < lst.size(); ++i) {
-            if (lst.get(i).getItemData().id == id) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    @Override
-    public void paint(Graphics g) {
-        super.paint(g);
-        g.setColor(Color.white);
-        g.fillRect(0, 0, super.width, 310);
-        drawEdges(g);
-    }
-}
 
 class DrawableEdge extends Edge {
     Color color;
@@ -167,6 +93,6 @@ class DrawableEdge extends Edge {
     }
 
     public boolean equals(Edge obj) {
-        return this.getFirstNode().getItemData().id == obj.getFirstNode().getItemData().id && this.getSecondNode().getItemData().id == obj.getSecondNode().getItemData().id;
+        return this.getFirstNode().equals(obj.getFirstNode()) && this.getSecondNode().equals(obj.getSecondNode());
     }
 }

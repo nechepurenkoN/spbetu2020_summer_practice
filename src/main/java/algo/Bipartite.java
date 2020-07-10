@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Map;
 
 import parser.MatchingData;
+import utils.Mediator;
 
 public class Bipartite {
     /**
@@ -44,6 +45,7 @@ public class Bipartite {
         }
         firstSide = new ArrayList<>(firstSideTemporarySet);
         secondSide = new ArrayList<>(secondSideTemporarySet);
+        resultMatching = new HashMap<>();
     }
 
 
@@ -87,13 +89,22 @@ public class Bipartite {
         return builder.toString();
     }
 
-    private void prepareParents() {
+    public void resetMatching() {
         resultMatching = new HashMap<>();
-        for (int i = 0; i < getNodesCount(); i++) {
-            NodeVisitor nodeVisitor = new NodeVisitor(this);
-            getIthNode(i).accept(nodeVisitor);
-        }
+    }
 
+    private void getMaxMatchingIteration(Mediator mediator) {
+        int i = mediator.getCurrentStep();
+
+        if (i == getFirstSide().size()) {
+          mediator.stop();
+          return;
+        }
+        NodeVisitor nodeVisitor = new NodeVisitor(this);
+        getIthNode(i).accept(nodeVisitor, mediator);
+
+        mediator.inc();
+        mediator.passCurrentMatching(getMaxMatching());
     }
 
     private GraphNode getIthNode(int i) {
@@ -107,11 +118,9 @@ public class Bipartite {
     }
 
     public ArrayList<Edge> getMaxMatching() {
-        prepareParents();
         ArrayList<Edge> result = new ArrayList<>();
         for (Map.Entry<GraphNode, GraphNode> currentEdge : resultMatching.entrySet()) {
-            if (currentEdge.getValue() != null)
-                result.add(new Edge(currentEdge.getValue(), currentEdge.getKey()));
+            result.add(new Edge(currentEdge.getValue(), currentEdge.getKey()));
         }
         return result;
     }
@@ -134,4 +143,7 @@ public class Bipartite {
         return edgesList;
     }
 
+    public void nextStep(Mediator mediator) {
+        getMaxMatchingIteration(mediator);
+    }
 }
