@@ -28,7 +28,7 @@ public class MainWindow extends JFrame {
 
     private MainWindow() {
         super("Vk Bipartite");
-        ImageIcon icon = new ImageIcon("res/icon.png");
+        ImageIcon icon = new ImageIcon("src\\main\\resources\\icon.png");
         setIconImage(icon.getImage());
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setCustomSize();
