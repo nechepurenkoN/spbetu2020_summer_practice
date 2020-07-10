@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Auth extends Parser {
+public class Auth {
 
     private final String CONFIG_PATH = "app.config";
     private static Auth self;
