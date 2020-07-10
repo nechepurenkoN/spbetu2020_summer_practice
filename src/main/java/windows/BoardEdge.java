@@ -34,10 +34,10 @@ public class BoardEdge extends Board {
 
     public void setMaxMatching(){
         setMaxMatching(bipartite.getMaxMatching(), Color.RED);
-
     }
 
     public void setMaxMatching(ArrayList<Edge> edgeList, Color color) {
+        setDefault();
         for (Edge edge: edgeList){
             drawEdge(edge, color);
         }
@@ -56,8 +56,6 @@ public class BoardEdge extends Board {
             int ind_user = findIndex(bipartite.getFirstSide(), edge.getFirstNode().getItemData().id);
             int ind_group = findIndex(bipartite.getSecondSide(), edge.getSecondNode().getItemData().id);
             g.setColor(edge.color);
-            if(g.getColor() == Color.RED)
-                System.out.println(edge.toString());
             for (int i = 0; i < 3; ++i)
                 g.drawLine(ind_user * userBoard.dx + 25 + userBoard.offsetX+i, 0, ind_group * groupBoard.dx + 25 + groupBoard.offsetX+i, 300);
         }

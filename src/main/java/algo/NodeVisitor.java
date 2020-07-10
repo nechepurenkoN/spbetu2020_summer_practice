@@ -22,17 +22,12 @@ public class NodeVisitor implements Visitor {
         visited.add(node);
         for (SemiEdge currentSemiEdge : graph.getAdjacentList(node)) {
             GraphNode adjacentNode = currentSemiEdge.getNode();
-            if (graph.getResultMatching(adjacentNode) == null || adjacentNode.accept(this, mediator)) {
-                performVisitAction(node, adjacentNode);
-                //graph.setResultMatching(adjacentNode, node);
+            if (graph.getResultMatching(adjacentNode) == null || graph.getResultMatching(adjacentNode).accept(this, mediator)) {
+                graph.setResultMatching(adjacentNode, node);
                 return Boolean.TRUE;
             }
         }
         return Boolean.FALSE;
     }
 
-    private void performVisitAction(GraphNode node, GraphNode adjacentNode) {
-        graph.setResultMatching(adjacentNode, node);
-        graph.setResultMatching(node, null);
-    }
 }

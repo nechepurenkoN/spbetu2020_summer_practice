@@ -100,7 +100,6 @@ public class Bipartite {
           mediator.stop();
           return;
         }
-
         NodeVisitor nodeVisitor = new NodeVisitor(this);
         getIthNode(i).accept(nodeVisitor, mediator);
 
@@ -121,8 +120,7 @@ public class Bipartite {
     public ArrayList<Edge> getMaxMatching() {
         ArrayList<Edge> result = new ArrayList<>();
         for (Map.Entry<GraphNode, GraphNode> currentEdge : resultMatching.entrySet()) {
-            if (currentEdge.getValue() != null)
-                result.add(new Edge(currentEdge.getValue(), currentEdge.getKey()));
+            result.add(new Edge(currentEdge.getValue(), currentEdge.getKey()));
         }
         return result;
     }

@@ -99,6 +99,6 @@ class DrawableEdge extends Edge{
     }
 
     public boolean equals(Edge obj) {
-        return this.getFirstNode().getItemData().id == obj.getFirstNode().getItemData().id && this.getSecondNode().getItemData().id == obj.getSecondNode().getItemData().id;
+        return this.getFirstNode().equals(obj.getFirstNode()) && this.getSecondNode().equals(obj.getSecondNode());
     }
 }
