@@ -8,6 +8,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.IOException;
 
 public class MainWindow extends JFrame {
@@ -18,7 +20,7 @@ public class MainWindow extends JFrame {
     private final JButton startButton = new JButton("Start!");
     private static MainWindow instance;
 
-    public static MainWindow getInstance(){
+    public static MainWindow getInstance() {
         if (instance == null)
             instance = new MainWindow();
         return instance;
@@ -42,7 +44,7 @@ public class MainWindow extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             try {
-                VisualWindow.getInstance();
+                new VisualWindow();
             } catch (InterruptedException | ClientException | ApiException | IOException interruptedException) {
                 interruptedException.printStackTrace();
             }
@@ -94,7 +96,8 @@ public class MainWindow extends JFrame {
 
         add(startButton);
     }
-    public String getVkId(){
+
+    public String getVkId() {
         return inputPanel.getText();
     }
 }
@@ -109,13 +112,34 @@ class InputPanel extends JPanel {
         setPreferredSize(new Dimension(50, 10));
         JLabel inputLabel = new JLabel("VK ID:");
         inputLabel.setHorizontalTextPosition(JLabel.RIGHT);
+        inputLine.addKeyListener(new StartKeyListener());
         add(inputLabel);
         inputLine.setPreferredSize(new Dimension(300, 10));
         add(Box.createHorizontalStrut(10));
         add(inputLine);
     }
 
-    public String getText(){
+    static class StartKeyListener implements KeyListener {
+
+        @Override
+        public void keyTyped(KeyEvent e) {}
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+            if (e.getKeyCode()==KeyEvent.VK_ENTER){
+                try {
+                    new VisualWindow();
+                } catch (InterruptedException | ClientException | ApiException | IOException interruptedException) {
+                    interruptedException.printStackTrace();
+                }
+            }
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {}
+    }
+
+    public String getText() {
         if (inputLine.getText().length() != 0) {
             return inputLine.getText();
         }

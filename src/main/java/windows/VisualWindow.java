@@ -13,49 +13,45 @@ import java.io.IOException;
 public class VisualWindow extends JDialog {
     private final GridBagLayout gbl = new GridBagLayout();
     private final GridBagConstraints consLayout = new GridBagConstraints();
-    private final BoardUser userBoard;
-    private final BoardEdge edgeBoard = new BoardEdge();
-    private final BoardGroup groupBoard = new BoardGroup();
     private final ButtonPanel buttonPanel = new ButtonPanel();
+    private final BoardUser userBoard;
+    private final BoardGroup groupBoard;
+    private final BoardEdge edgeBoard;
     private final Bipartite bip;
-    private static VisualWindow instance;
 
-    public static VisualWindow getInstance() throws InterruptedException, ClientException, ApiException, IOException {
-        if (instance == null)
-            instance = new VisualWindow();
-        instance.setVisible(true);
-        return instance;
-    }
 
-    private VisualWindow() throws IOException, InterruptedException, ClientException, ApiException {
+    VisualWindow() throws InterruptedException, ClientException, ApiException, IOException {
         super();
         bip = new Bipartite(new ParserFacade().getMatchingDataList(Integer.valueOf(MainWindow.getInstance().getVkId())));
-        userBoard = new BoardUser(bip.getFirstSide().size(), bip.getSecondSide().size());
+        userBoard = new BoardUser(bip);
+        groupBoard = new BoardGroup(bip);
+        edgeBoard = new BoardEdge(bip, userBoard,groupBoard);
         ImageIcon icon = new ImageIcon("resources/icon.png");
         setModal(true);
         setTitle("Visualization");
         setIconImage(icon.getImage());
+        setCustomSize();
         setDefaultCloseOperation(HIDE_ON_CLOSE);
         setBackground(Color.lightGray);
-        setCustomSize();
         setUserBoard();
         setEdgeBoard();
         setGroupBoard();
         setButtonPanel();
         setLayout(gbl);
+        setVisible(true);
     }
 
     private void setCustomSize() {
         Toolkit tk = Toolkit.getDefaultToolkit();
-        setBounds(tk.getScreenSize().width / 2 - 400, tk.getScreenSize().height / 2 - 400, 800, 900);
+        setBounds(tk.getScreenSize().width / 2 - 475, tk.getScreenSize().height / 2 - 300, 950, 700);
         setResizable(false);
     }
 
     private void setUserBoard() {
-        consLayout.anchor = GridBagConstraints.WEST;
-        consLayout.fill = GridBagConstraints.VERTICAL;
-        consLayout.gridheight = GridBagConstraints.REMAINDER;
-        consLayout.gridwidth = 1;
+        consLayout.anchor = GridBagConstraints.NORTH;
+        consLayout.fill = GridBagConstraints.HORIZONTAL;
+        consLayout.gridheight = 1;
+        consLayout.gridwidth = GridBagConstraints.REMAINDER;
         consLayout.gridx = 1;
         consLayout.gridy = 1;
         consLayout.insets = new Insets(0, 0, 0, 0);
@@ -66,8 +62,8 @@ public class VisualWindow extends JDialog {
     }
 
     private void setEdgeBoard() {
-        consLayout.gridx = 2;
-        consLayout.gridy = 1;
+        consLayout.gridx = 1;
+        consLayout.gridy = 2;
         consLayout.ipadx = edgeBoard.getWidth();
         consLayout.ipady = edgeBoard.getHeight();
         gbl.setConstraints(edgeBoard, consLayout);
@@ -75,49 +71,42 @@ public class VisualWindow extends JDialog {
     }
 
     private void setGroupBoard() {
-        consLayout.gridx = 3;
-        consLayout.gridy = 1;
+        consLayout.gridx = 1;
+        consLayout.gridy = 3;
         consLayout.ipadx = groupBoard.getWidth();
         consLayout.ipady = groupBoard.getHeight();
         gbl.setConstraints(groupBoard, consLayout);
         add(groupBoard);
     }
 
-    private void setButtonPanel() throws IOException {
-        consLayout.gridx = 4;
-        consLayout.gridy = 1;
-        consLayout.insets = new Insets(0, 10, 0, 0);
+    private void setButtonPanel(){
+        consLayout.gridwidth = GridBagConstraints.NONE;
+        consLayout.fill = GridBagConstraints.NONE;
+        consLayout.gridx = 1;
+        consLayout.gridy = 4;
+        consLayout.insets = new Insets(10, 0, 0, 0);
         consLayout.ipadx = buttonPanel.getWidth();
         consLayout.ipady = buttonPanel.getHeight();
         gbl.setConstraints(buttonPanel, consLayout);
         add(buttonPanel);
         buttonPanel.draw.addActionListener((ActionEvent e) -> {
-            try {
-                this.drawBipartite();
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            }
         });
         buttonPanel.maxMatching.addActionListener((ActionEvent e) -> {
-            edgeBoard.showBipartite(bip);
+            edgeBoard.setMaxMatching();
+            edgeBoard.repaint();
         });
         buttonPanel.erase.addActionListener((ActionEvent e) -> {
-            userBoard.erase();
-            edgeBoard.erase();
-            groupBoard.erase();
+            edgeBoard.setDefault();
+            edgeBoard.repaint();
         });
-    }
-
-    private void drawBipartite() throws IOException {
-        userBoard.setNodes(bip.getFirstSide());
-        groupBoard.setNodes(bip.getSecondSide());
-        edgeBoard.setEdges(bip);
+        buttonPanel.step.addActionListener((ActionEvent e) ->{});
     }
 }
 
 class ButtonPanel extends JPanel {
-    JButton maxMatching = new JButton("Max Matching");
     JButton draw = new JButton("Draw");
+    JButton step = new JButton("Step");
+    JButton maxMatching = new JButton("Max Matching");
     JButton erase = new JButton("Erase");
 
     ButtonPanel() {
@@ -125,9 +114,12 @@ class ButtonPanel extends JPanel {
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         setPreferredSize(new Dimension(50, 10));
         draw.setBorder(new RoundedBorder(10));
+        step.setBorder(new RoundedBorder(10));
         maxMatching.setBorder(new RoundedBorder(10));
         erase.setBorder(new RoundedBorder(10));
         add(draw);
+        add(Box.createHorizontalStrut(10));
+        add(step);
         add(Box.createHorizontalStrut(10));
         add(maxMatching);
         add(Box.createHorizontalStrut(10));
