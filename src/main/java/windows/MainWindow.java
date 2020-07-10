@@ -9,16 +9,20 @@ import parser.ParserFacade;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 public class MainWindow extends JFrame {
     private final GridBagLayout gbl = new GridBagLayout();
     private final GridBagConstraints consLayout = new GridBagConstraints();
-    private final JLabel greeting = new JLabel("<html><p align=center>VK Bipartite<br>v.0.1</p></html>");
+    private final JLabel logo = new JLabel(new ImageIcon("src\\main\\resources\\logo.png"));
+    private final JLabel greeting = new JLabel("<html><h1 align=center>VK Bipartite</h1><p align=center>" +
+            "Данное решение позволяет визуализировать алгоритм поиска " +
+            "максимального паросочетания в двудольном графе. Доли графа " +
+            "представляют собой группу пользователей социальной сети ВКонтакте " +
+            "и группу сообществ, на которые они подписаны.</p></html>");
     private final InputPanel inputPanel = new InputPanel();
     private final JButton startButton = new JButton("Start!");
     private static MainWindow instance;
@@ -39,6 +43,7 @@ public class MainWindow extends JFrame {
         setGreeting();
         setInputPanel();
         setButtonStart();
+        setAuthors();
         setBackground(Color.white);
         setVisible(true);
     }
@@ -58,6 +63,7 @@ public class MainWindow extends JFrame {
         Toolkit tk = Toolkit.getDefaultToolkit();
         setBounds(tk.getScreenSize().width / 2 - 300, tk.getScreenSize().height / 2 - 200, 600, 400);
         setMinimumSize(new Dimension(600, 400));
+        setResizable(false);
     }
 
     private void setGreeting() {
@@ -68,9 +74,14 @@ public class MainWindow extends JFrame {
         consLayout.gridwidth = GridBagConstraints.REMAINDER;
         consLayout.gridx = 1;
         consLayout.gridy = 1;
-        consLayout.ipadx = 490;
-        consLayout.ipady = 190;
+        consLayout.ipady = logo.getHeight();
+        consLayout.insets = new Insets(10, 0, 0, 0);
+        gbl.setConstraints(logo, consLayout);
+        consLayout.gridy = GridBagConstraints.RELATIVE;
+        consLayout.ipady = greeting.getHeight();
+        consLayout.insets = new Insets(0, 0, 0, 0);
         gbl.setConstraints(greeting, consLayout);
+        add(logo);
         add(greeting);
     }
 
@@ -80,6 +91,7 @@ public class MainWindow extends JFrame {
         consLayout.ipadx = 300;
         consLayout.fill = GridBagConstraints.NONE;
         consLayout.ipady = 10;
+        consLayout.insets = new Insets(10, 0, 0, 0);
         gbl.setConstraints(inputPanel, consLayout);
         add(inputPanel);
     }
@@ -96,7 +108,6 @@ public class MainWindow extends JFrame {
         consLayout.fill = GridBagConstraints.NONE;
         consLayout.insets = new Insets(20, 0, 0, 0);
         gbl.setConstraints(startButton, consLayout);
-
         add(startButton);
     }
 
@@ -107,6 +118,49 @@ public class MainWindow extends JFrame {
         } catch (RuntimeException | ApiParamException e) {
             new ErrorWindow(e.getMessage());
         }
+    }
+
+    private void setAuthors(){
+        Authors authors = new Authors();
+        consLayout.anchor=GridBagConstraints.SOUTH;
+        consLayout.fill = GridBagConstraints.HORIZONTAL;
+        consLayout.gridheight = 1;
+        consLayout.gridwidth = GridBagConstraints.REMAINDER;
+        consLayout.gridx = 1;
+        consLayout.gridy = GridBagConstraints.RELATIVE;
+        consLayout.ipadx = authors.getWidth();
+        consLayout.ipady = authors.getHeight();
+        gbl.setConstraints(authors, consLayout);
+        add(authors);
+    }
+
+}
+
+class Authors extends JPanel{
+    JLabel nn = new JLabel("Нечепуренко Никита");
+    JLabel ta = new JLabel("Терехов Александр");
+    JLabel tt = new JLabel("Торосян Тимофей");
+    Authors(){
+        goWebsite(nn , "https://github.com/nechepurenkoN", nn.getText());
+        goWebsite(ta , "https://github.com/snchz29", ta.getText());
+        goWebsite(tt , "https://github.com/sandman595", tt.getText());
+        add(nn);
+        add(ta);
+        add(tt);
+    }
+    private void goWebsite(JLabel website, final String url, String text) {
+        website.setText("<html><a href=\"\">"+text+"</a></html>");
+        website.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        website.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                try {
+                    Desktop.getDesktop().browse(new URI(url));
+                } catch (URISyntaxException | IOException ex) {
+                    //It looks like there's a problem
+                }
+            }
+        });
     }
 }
 
