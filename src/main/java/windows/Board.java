@@ -1,13 +1,20 @@
 package windows;
 
+import algo.Bipartite;
+import algo.Edge;
+
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 
 abstract public class Board extends JPanel {
-    Board(int w, int h) {
+    protected int width = 950;
+    Bipartite bipartite;
+
+    Board(int h) {
         super();
-        setSize(w, h);
         setBackground(Color.white);
+        setSize(width, h);
     }
 
     public void erase() {
@@ -16,77 +23,76 @@ abstract public class Board extends JPanel {
 }
 
 abstract class BoardNode extends Board {
-    protected int count = 0;
-
     BoardNode() {
-        super(100, 600);
+        super(100);
     }
 
-    public void add(Color clr) {
-    }
-
-    public void erase() {
-        super.erase();
-        count = 0;
-    }
-
+    protected int dx;
+    protected int offsetY;
+    protected int offsetX;
+    protected BufferImagesUsers imagesUsers;
+    protected BufferImagesGroups imagesGroups;
 }
 
 class BoardUser extends BoardNode {
-    private final int dy = 110;
-    private final int r = 100;
-
-    BoardUser() {
+    BoardUser(Bipartite bip) throws IOException {
         super();
+        dx = 160;
+        offsetY = 30;
+        offsetX = Math.max(0, (bip.getSecondSide().size() * dx - bip.getFirstSide().size() * dx) / 2 + (width - bip.getSecondSide().size() * dx) / 2);
+        bipartite = bip;
+        imagesUsers = new BufferImagesUsers(bip);
     }
 
     @Override
-    public void add(Color clr) {
-        if (count > 2) {
-            return;
+    protected void paintComponent(Graphics g) {
+        g.setColor(Color.white);
+        g.fillRect(0, 0, super.width, 110);
+        for (int i = 0; i < bipartite.getFirstSide().size(); ++i) {
+            Image img = imagesUsers.listPhotos.get(i);;
+            int odd = (i % 2) * 17;
+            Font font = new Font(Font.DIALOG, Font.BOLD, 12);
+            String name = bipartite.getFirstSide().get(i).getItemData().name;
+            g.setFont(font);
+            g.setColor(Color.BLACK);
+            g.drawString(name, i * dx + offsetX - (g.getFontMetrics().stringWidth(name) - 50) / 2, offsetY + 75 - odd);
+            g.drawImage(img, i * dx + offsetX, offsetY - odd, null);
         }
-        Graphics g = getGraphics();
-        g.setColor(clr);
-        g.fillOval(0, count * dy, r, r);
-        ++count;
     }
-
 }
-
 
 class BoardGroup extends BoardNode {
-    private final int dy = 60;
-    private final int r = 50;
-
-    BoardGroup() {
+    BoardGroup(Bipartite bip) throws IOException {
         super();
+        dx = 60;
+        offsetY = 0;
+        offsetX = Math.max(0, (width - bip.getSecondSide().size() * dx) / 2);
+        bipartite = bip;
+        imagesGroups = new BufferImagesGroups(bip);
     }
 
     @Override
-    public void add(Color clr) {
-        if (count > 2) {
-            return;
+    protected void paintComponent(Graphics g) {
+        g.setColor(Color.white);
+        g.fillRect(0, 0, super.width, 100);
+        for (int i = 0; i < bipartite.getSecondSide().size(); ++i) {
+            Image img;
+            img = imagesGroups.listPhotos.get(i);
+            g.drawImage(img, i * dx + offsetX, offsetY, null);
         }
-        Graphics g = getGraphics();
-        g.setColor(clr);
-        g.fillOval(0, count * dy, r, r);
-        ++count;
     }
 }
 
-class BoardEdge extends Board {
-    private final int width = 300;
 
-    BoardEdge() {
-        super(300, 600);
+class DrawableEdge extends Edge {
+    Color color;
+
+    public DrawableEdge(Edge e, Color clr) {
+        super(e.getFirstNode(), e.getSecondNode());
+        color = clr;
     }
 
-    public void setEdges(Color clr) {
-        Graphics g = getGraphics();
-        g.setColor(clr);
-        g.drawLine(0, 50 + 0 * 110, width, 25 + 0 * 60);
-        g.drawLine(0, 50 + 0 * 110, width, 25 + 1 * 60);
-        g.drawLine(0, 50 + 1 * 110, width, 25 + 2 * 60);
-        g.drawLine(0, 50 + 2 * 110, width, 25 + 1 * 60);
+    public boolean equals(Edge obj) {
+        return this.getFirstNode().equals(obj.getFirstNode()) && this.getSecondNode().equals(obj.getSecondNode());
     }
 }

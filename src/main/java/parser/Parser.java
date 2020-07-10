@@ -38,27 +38,26 @@ public class Parser {
         return instance;
     }
 
-
-    public List<Integer> getUserFriendsIds(Integer userId, Integer count) throws ClientException, ApiException {
+    public List<Integer> getUserFriendsIds(Integer userId) throws ClientException, ApiException {
         return apiClient.friends().get(serviceActor)
                 .lang(Lang.RU)
                 .userId(userId)
-                .count(count)
                 .order(FriendsOrder.NAME)
+                .count(13)
                 .execute()
                 .getItems();
     }
 
-    public List<Integer> getUserCommunitiesIds(Integer userId, Integer count) throws ClientException, ApiException {
+    public List<Integer> getUserCommunitiesIds(Integer userId) throws ClientException, ApiException {
         return apiClient.groups().get(userActor)
                 .userId(userId)
                 .lang(Lang.RU)
-                .count(count)
+                .count(13)
                 .execute()
                 .getItems();
     }
 
-    public List<GroupFull> getGroupsByid(List<Integer> listOfGroupIds) throws ClientException, ApiException {
+    public List<GroupFull> getGroupsById(List<Integer> listOfGroupIds) throws ClientException, ApiException {
         return apiClient.groups().getById(userActor)
                 .groupIds(listOfGroupIds.stream().map(item -> String.valueOf(item)).collect(Collectors.toList()))
                 .execute();
@@ -66,7 +65,17 @@ public class Parser {
 
     public List<UserXtrCounters> getUsersByIds(List<Integer> listOfUserIds) throws ClientException, ApiException {
         return apiClient.users().get(userActor)
-                .userIds(listOfUserIds.stream().map(item -> String.valueOf(item)).collect(Collectors.toList()))
+                .userIds(listOfUserIds.stream().filter(item -> {
+                    try {
+                        return isUserValid(item);
+                    } catch (ClientException e) {
+                        e.printStackTrace();
+                        return false;
+                    } catch (ApiException e) {
+                        e.printStackTrace();
+                        return false;
+                    }
+                }).map(item -> String.valueOf(item)).collect(Collectors.toList()))
                 .execute();
     }
 
@@ -79,9 +88,24 @@ public class Parser {
     public String getAvatarURL(Integer userId) throws ClientException, ApiException {
         List<Photo> profilePhotoList = getUserAvatars(userId);
         if (profilePhotoList.size() == 0)
-            return "default";
+            return "https://vk.com/images/camera_50.png";
         Photo avatarItself = profilePhotoList.get(profilePhotoList.size() - 1);
         return avatarItself.getSizes().get(0).getUrl().toString();
+    }
+
+    public boolean isUserValid(Integer userId) throws ClientException, ApiException {
+        List<UserXtrCounters> result = apiClient.users().get(serviceActor).userIds(String.valueOf(userId)).execute();
+        if (result == null)
+            return false;
+        UserXtrCounters user = result.get(0);
+        if (user == null)
+            return false;
+        try {
+            return !user.getIsClosed() && user.getDeactivated() == null;
+        } catch (NullPointerException e) {
+            e.getMessage();
+        }
+        return false;
     }
 
 }

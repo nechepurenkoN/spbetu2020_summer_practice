@@ -45,5 +45,22 @@
     <orderEntry type="library" name="Maven: org.apache.logging.log4j:log4j-slf4j-impl:2.11.2" level="project" />
     <orderEntry type="library" name="Maven: org.apache.logging.log4j:log4j-api:2.11.2" level="project" />
     <orderEntry type="library" name="Maven: org.apache.logging.log4j:log4j-core:2.11.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.maven.plugins:maven-install-plugin:maven-plugin:2.4" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.maven:maven-plugin-api:2.0.6" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.maven:maven-project:2.0.6" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.maven:maven-settings:2.0.6" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.maven:maven-profile:2.0.6" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.maven:maven-plugin-registry:2.0.6" level="project" />
+    <orderEntry type="library" name="Maven: org.codehaus.plexus:plexus-container-default:1.0-alpha-9-stable-1" level="project" />
+    <orderEntry type="library" name="Maven: junit:junit:3.8.1" level="project" />
+    <orderEntry type="library" name="Maven: classworlds:classworlds:1.1-alpha-2" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.maven:maven-model:2.0.6" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.maven:maven-artifact-manager:2.0.6" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.maven:maven-repository-metadata:2.0.6" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.maven.wagon:wagon-provider-api:1.0-beta-2" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.maven:maven-artifact:2.0.6" level="project" />
+    <orderEntry type="library" name="Maven: org.codehaus.plexus:plexus-utils:3.0.5" level="project" />
+    <orderEntry type="library" name="Maven: org.codehaus.plexus:plexus-digest:1.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.maven.plugins:maven-deploy-plugin:maven-plugin:2.7" level="project" />
   </component>
 </module>

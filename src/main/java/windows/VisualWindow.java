@@ -1,45 +1,60 @@
 package windows;
 
+import algo.Bipartite;
+import com.vk.api.sdk.exceptions.ApiException;
+import com.vk.api.sdk.exceptions.ClientException;
+import parser.ParserFacade;
+import utils.Mediator;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.io.IOException;
 
-public class VisualWindow extends JFrame {
+public class VisualWindow extends JDialog {
     private final GridBagLayout gbl = new GridBagLayout();
     private final GridBagConstraints consLayout = new GridBagConstraints();
-    private final BoardUser userBoard = new BoardUser();
-    private final BoardEdge edgeBoard = new BoardEdge();
-    private final BoardGroup groupBoard = new BoardGroup();
     private final ButtonPanel buttonPanel = new ButtonPanel();
+    private final BoardUser userBoard;
+    private final BoardGroup groupBoard;
+    private final BoardEdge edgeBoard;
+    private final Bipartite bip;
+    private final Mediator mediator;
 
-    VisualWindow() {
-        super("Visualization");
-        ImageIcon icon = new ImageIcon("res/icon.png");
+
+    VisualWindow(Bipartite b) throws IOException {
+        super();
+        bip = b;
+        userBoard = new BoardUser(bip);
+        groupBoard = new BoardGroup(bip);
+        edgeBoard = new BoardEdge(bip, userBoard,groupBoard);
+        mediator = new Mediator(this);
+        ImageIcon icon = new ImageIcon("resources/icon.png");
+        setModal(true);
+        setTitle("Visualization");
         setIconImage(icon.getImage());
+        setCustomSize();
         setDefaultCloseOperation(HIDE_ON_CLOSE);
         setBackground(Color.lightGray);
-        setCustomSize();
         setUserBoard();
         setEdgeBoard();
         setGroupBoard();
         setButtonPanel();
         setLayout(gbl);
         setVisible(true);
-        // TODO: check id
     }
 
     private void setCustomSize() {
         Toolkit tk = Toolkit.getDefaultToolkit();
-        setBounds(tk.getScreenSize().width / 2 - 350, tk.getScreenSize().height / 2 - 300, 700, 600);
+        setBounds(tk.getScreenSize().width / 2 - 475, tk.getScreenSize().height / 2 - 300, 950, 700);
         setResizable(false);
     }
 
     private void setUserBoard() {
-        consLayout.anchor = GridBagConstraints.WEST;
-        consLayout.fill = GridBagConstraints.VERTICAL;
-        consLayout.gridheight = GridBagConstraints.REMAINDER;
-        consLayout.gridwidth = 1;
+        consLayout.anchor = GridBagConstraints.NORTH;
+        consLayout.fill = GridBagConstraints.HORIZONTAL;
+        consLayout.gridheight = 1;
+        consLayout.gridwidth = GridBagConstraints.REMAINDER;
         consLayout.gridx = 1;
         consLayout.gridy = 1;
         consLayout.insets = new Insets(0, 0, 0, 0);
@@ -47,66 +62,71 @@ public class VisualWindow extends JFrame {
         consLayout.ipady = userBoard.getHeight();
         gbl.setConstraints(userBoard, consLayout);
         add(userBoard);
-//        userBoard.setBackground(Color.BLUE);
     }
 
     private void setEdgeBoard() {
-        consLayout.gridx = 2;
-        consLayout.gridy = 1;
+        consLayout.gridx = 1;
+        consLayout.gridy = 2;
         consLayout.ipadx = edgeBoard.getWidth();
         consLayout.ipady = edgeBoard.getHeight();
         gbl.setConstraints(edgeBoard, consLayout);
         add(edgeBoard);
-//        edgeBoard.setBackground(Color.RED);
     }
 
     private void setGroupBoard() {
-        consLayout.gridx = 3;
-        consLayout.gridy = 1;
+        consLayout.gridx = 1;
+        consLayout.gridy = 3;
         consLayout.ipadx = groupBoard.getWidth();
         consLayout.ipady = groupBoard.getHeight();
         gbl.setConstraints(groupBoard, consLayout);
         add(groupBoard);
-//        groupBoard.setBackground(Color.GREEN);
     }
 
-    private void setButtonPanel() {
-//        consLayout.anchor = GridBagConstraints.SOUTH;
-        consLayout.gridx = 4;
-        consLayout.gridy = 1;
-        consLayout.insets = new Insets(0, 10, 0, 0);
+    private void setButtonPanel(){
+        consLayout.gridwidth = GridBagConstraints.NONE;
+        consLayout.fill = GridBagConstraints.NONE;
+        consLayout.gridx = 1;
+        consLayout.gridy = 4;
+        consLayout.insets = new Insets(10, 0, 0, 0);
         consLayout.ipadx = buttonPanel.getWidth();
         consLayout.ipady = buttonPanel.getHeight();
         gbl.setConstraints(buttonPanel, consLayout);
         add(buttonPanel);
-        buttonPanel.play.addActionListener((ActionEvent e) -> {
-            userBoard.add(Color.RED);
-            userBoard.add(Color.GREEN);
-            userBoard.add(Color.BLUE);
-            groupBoard.add(Color.RED);
-            groupBoard.add(Color.GREEN);
-            groupBoard.add(Color.BLUE);
-            edgeBoard.setEdges(Color.BLACK);
+        buttonPanel.maxMatching.addActionListener((ActionEvent e) -> {
+            edgeBoard.setMaxMatching();
+            edgeBoard.repaint();
+            buttonPanel.maxMatching.setEnabled(false);
         });
-        buttonPanel.step.addActionListener((ActionEvent e) -> {
-            userBoard.erase();
-            groupBoard.erase();
-            edgeBoard.erase();
+        buttonPanel.erase.addActionListener((ActionEvent e) -> {
+            edgeBoard.setDefault();
+            edgeBoard.repaint();
+            bip.resetMatching();
+            mediator.reset();
+            buttonPanel.step.setEnabled(true);
+            buttonPanel.maxMatching.setEnabled(false);
         });
-    }
-}
+        buttonPanel.step.addActionListener((ActionEvent e) ->{
+            bip.nextStep(mediator);
+        });
 
-class ButtonPanel extends JPanel {
-    JButton step = new JButton("Step");
-    JButton play = new JButton("Play");
-
-    ButtonPanel() {
-        super();
-        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        setPreferredSize(new Dimension(50, 10));
-        add(step);
-        add(Box.createHorizontalStrut(10));
-        add(play);
+        buttonPanel.maxMatching.setEnabled(false);
     }
 
+    public ButtonPanel getButtonPanel() {
+        return buttonPanel;
+    }
+
+    public BoardEdge getEdgeBoard() {
+        return edgeBoard;
+    }
+
+    public void setButtonActive(JButton btn) {
+        btn.setEnabled(true);
+    }
+
+    public void setButtonInActive(JButton btn) {
+        btn.setEnabled(false);
+    }
+
 }
+
