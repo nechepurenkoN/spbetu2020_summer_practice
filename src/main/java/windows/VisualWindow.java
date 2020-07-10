@@ -22,9 +22,9 @@ public class VisualWindow extends JDialog {
     private final Mediator mediator;
 
 
-    VisualWindow() throws InterruptedException, ClientException, ApiException, IOException {
+    VisualWindow(Bipartite b) throws IOException {
         super();
-        bip = new Bipartite(new ParserFacade().getMatchingDataList(Integer.valueOf(MainWindow.getInstance().getVkId())));
+        bip = b;
         userBoard = new BoardUser(bip);
         groupBoard = new BoardGroup(bip);
         edgeBoard = new BoardEdge(bip, userBoard,groupBoard);
@@ -92,8 +92,6 @@ public class VisualWindow extends JDialog {
         consLayout.ipady = buttonPanel.getHeight();
         gbl.setConstraints(buttonPanel, consLayout);
         add(buttonPanel);
-        buttonPanel.draw.addActionListener((ActionEvent e) -> {
-        });
         buttonPanel.maxMatching.addActionListener((ActionEvent e) -> {
             edgeBoard.setMaxMatching();
             edgeBoard.repaint();

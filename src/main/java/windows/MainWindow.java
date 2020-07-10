@@ -1,8 +1,11 @@
 package windows;
 
+import algo.Bipartite;
 import com.vk.api.sdk.exceptions.ApiException;
+import com.vk.api.sdk.exceptions.ApiParamException;
 import com.vk.api.sdk.exceptions.ClientException;
 import parser.Parser;
+import parser.ParserFacade;
 
 import javax.swing.*;
 import java.awt.*;
@@ -44,7 +47,7 @@ public class MainWindow extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             try {
-                new VisualWindow();
+                MainWindow.getInstance().startVisualisation();
             } catch (InterruptedException | ClientException | ApiException | IOException interruptedException) {
                 interruptedException.printStackTrace();
             }
@@ -97,8 +100,13 @@ public class MainWindow extends JFrame {
         add(startButton);
     }
 
-    public String getVkId() {
-        return inputPanel.getText();
+    public void startVisualisation() throws InterruptedException, ClientException, ApiException, IOException {
+        try {
+            Bipartite bip = new Bipartite(new ParserFacade().getMatchingDataList(Integer.valueOf(inputPanel.getText())));
+            new VisualWindow(bip);
+        } catch (RuntimeException | ApiParamException e) {
+            new ErrorWindow(e.getMessage());
+        }
     }
 }
 
@@ -122,13 +130,14 @@ class InputPanel extends JPanel {
     static class StartKeyListener implements KeyListener {
 
         @Override
-        public void keyTyped(KeyEvent e) {}
+        public void keyTyped(KeyEvent e) {
+        }
 
         @Override
         public void keyPressed(KeyEvent e) {
-            if (e.getKeyCode()==KeyEvent.VK_ENTER){
+            if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                 try {
-                    new VisualWindow();
+                    MainWindow.getInstance().startVisualisation();
                 } catch (InterruptedException | ClientException | ApiException | IOException interruptedException) {
                     interruptedException.printStackTrace();
                 }
@@ -136,7 +145,8 @@ class InputPanel extends JPanel {
         }
 
         @Override
-        public void keyReleased(KeyEvent e) {}
+        public void keyReleased(KeyEvent e) {
+        }
     }
 
     public String getText() {
