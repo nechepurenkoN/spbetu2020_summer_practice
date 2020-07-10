@@ -1,9 +1,11 @@
 package algo;
 
+import utils.Mediator;
+
 import java.util.HashSet;
 
 interface Visitor {
-    public abstract Boolean visit(GraphNode node);
+    public abstract Boolean visit(GraphNode node, Mediator mediator);
 }
 public class NodeVisitor implements Visitor {
     private HashSet<GraphNode> visited;
@@ -14,18 +16,23 @@ public class NodeVisitor implements Visitor {
         this.graph = graph;
     }
 
-    public Boolean visit(GraphNode node) {
+    public Boolean visit(GraphNode node, Mediator mediator) {
         if (visited.contains(node))
             return Boolean.FALSE;
         visited.add(node);
         for (SemiEdge currentSemiEdge : graph.getAdjacentList(node)) {
             GraphNode adjacentNode = currentSemiEdge.getNode();
-            if (graph.getResultMatching(adjacentNode) == null || adjacentNode.accept(this)) {
-                graph.setResultMatching(adjacentNode, node);
-                graph.setResultMatching(node, null);
+            if (graph.getResultMatching(adjacentNode) == null || adjacentNode.accept(this, mediator)) {
+                performVisitAction(node, adjacentNode);
+                //graph.setResultMatching(adjacentNode, node);
                 return Boolean.TRUE;
             }
         }
         return Boolean.FALSE;
+    }
+
+    private void performVisitAction(GraphNode node, GraphNode adjacentNode) {
+        graph.setResultMatching(adjacentNode, node);
+        graph.setResultMatching(node, null);
     }
 }

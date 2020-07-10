@@ -4,6 +4,7 @@ import algo.Bipartite;
 import com.vk.api.sdk.exceptions.ApiException;
 import com.vk.api.sdk.exceptions.ClientException;
 import parser.ParserFacade;
+import utils.Mediator;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,6 +19,7 @@ public class VisualWindow extends JDialog {
     private final BoardGroup groupBoard;
     private final BoardEdge edgeBoard;
     private final Bipartite bip;
+    private final Mediator mediator;
 
 
     VisualWindow() throws InterruptedException, ClientException, ApiException, IOException {
@@ -26,6 +28,7 @@ public class VisualWindow extends JDialog {
         userBoard = new BoardUser(bip);
         groupBoard = new BoardGroup(bip);
         edgeBoard = new BoardEdge(bip, userBoard,groupBoard);
+        mediator = new Mediator(this);
         ImageIcon icon = new ImageIcon("resources/icon.png");
         setModal(true);
         setTitle("Visualization");
@@ -94,35 +97,38 @@ public class VisualWindow extends JDialog {
         buttonPanel.maxMatching.addActionListener((ActionEvent e) -> {
             edgeBoard.setMaxMatching();
             edgeBoard.repaint();
+            buttonPanel.maxMatching.setEnabled(false);
         });
         buttonPanel.erase.addActionListener((ActionEvent e) -> {
             edgeBoard.setDefault();
             edgeBoard.repaint();
+            bip.resetMatching();
+            mediator.reset();
+            buttonPanel.step.setEnabled(true);
+            buttonPanel.maxMatching.setEnabled(false);
         });
-        buttonPanel.step.addActionListener((ActionEvent e) ->{});
+        buttonPanel.step.addActionListener((ActionEvent e) ->{
+            bip.nextStep(mediator);
+        });
+
+        buttonPanel.maxMatching.setEnabled(false);
     }
+
+    public ButtonPanel getButtonPanel() {
+        return buttonPanel;
+    }
+
+    public BoardEdge getEdgeBoard() {
+        return edgeBoard;
+    }
+
+    public void setButtonActive(JButton btn) {
+        btn.setEnabled(true);
+    }
+
+    public void setButtonInActive(JButton btn) {
+        btn.setEnabled(false);
+    }
+
 }
 
-class ButtonPanel extends JPanel {
-    JButton draw = new JButton("Draw");
-    JButton step = new JButton("Step");
-    JButton maxMatching = new JButton("Max Matching");
-    JButton erase = new JButton("Erase");
-
-    ButtonPanel() {
-        super();
-        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        setPreferredSize(new Dimension(50, 10));
-        draw.setBorder(new RoundedBorder(10));
-        step.setBorder(new RoundedBorder(10));
-        maxMatching.setBorder(new RoundedBorder(10));
-        erase.setBorder(new RoundedBorder(10));
-        add(draw);
-        add(Box.createHorizontalStrut(10));
-        add(step);
-        add(Box.createHorizontalStrut(10));
-        add(maxMatching);
-        add(Box.createHorizontalStrut(10));
-        add(erase);
-    }
-}
