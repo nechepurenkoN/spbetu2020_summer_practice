@@ -39,27 +39,15 @@ abstract class BoardNode extends Board {
     protected BufferImagesGroups imagesGroups;
 
     public void setNodes(ArrayList<GraphNode> lst, Graphics g) {
-        for (int i = 0; i < lst.size(); ++i) {
-            Image img;
-            if (this instanceof BoardUser) {
-                img = imagesUsers.listPhotos.get(i);
-                Font font = new Font(Font.DIALOG, Font.BOLD, 12);
-                String name = lst.get(i).getItemData().name;
-                g.setFont(font);
-                g.setColor(Color.BLACK);
-                g.drawString(name, i * dx + offsetX - (g.getFontMetrics().stringWidth(name) - 50) / 2, offsetY + 63);
-            } else
-                img = imagesGroups.listPhotos.get(i);
-            g.drawImage(img, i * dx + offsetX, offsetY, null);
-        }
+
     }
 }
 
 class BoardUser extends BoardNode {
     BoardUser(Bipartite bip) throws IOException {
         super();
-        dx = 110;
-        offsetY = 20;
+        dx = 160;
+        offsetY = 30;
         offsetX = Math.max(0, (bip.getSecondSide().size() * dx - bip.getFirstSide().size() * dx) / 2 + (width - bip.getSecondSide().size() * dx) / 2);
         bipartite = bip;
         imagesUsers = new BufferImagesUsers(bip);
@@ -69,7 +57,16 @@ class BoardUser extends BoardNode {
     protected void paintComponent(Graphics g) {
         g.setColor(Color.white);
         g.fillRect(0, 0, super.width, 110);
-        setNodes(bipartite.getFirstSide(), g);
+        for (int i = 0; i < bipartite.getFirstSide().size(); ++i) {
+            Image img = imagesUsers.listPhotos.get(i);;
+            int odd = (i % 2) * 17;
+            Font font = new Font(Font.DIALOG, Font.BOLD, 12);
+            String name = bipartite.getFirstSide().get(i).getItemData().name;
+            g.setFont(font);
+            g.setColor(Color.BLACK);
+            g.drawString(name, i * dx + offsetX - (g.getFontMetrics().stringWidth(name) - 50) / 2, offsetY + 75 - odd);
+            g.drawImage(img, i * dx + offsetX, offsetY - odd, null);
+        }
     }
 }
 
@@ -87,7 +84,11 @@ class BoardGroup extends BoardNode {
     protected void paintComponent(Graphics g) {
         g.setColor(Color.white);
         g.fillRect(0, 0, super.width, 100);
-        setNodes(bipartite.getSecondSide(), g);
+        for (int i = 0; i < bipartite.getSecondSide().size(); ++i) {
+            Image img;
+            img = imagesGroups.listPhotos.get(i);
+            g.drawImage(img, i * dx + offsetX, offsetY, null);
+        }
     }
 }
 
@@ -101,25 +102,25 @@ class BoardEdge extends Board {
         userBoard = ub;
         groupBoard = gb;
         bipartite = b;
-        for (Edge edge: bipartite.getEdges()){
+        for (Edge edge : bipartite.getEdges()) {
             edges.add(new DrawableEdge(edge, Color.BLACK));
         }
     }
 
-    public void setDefault(){
-        for (Edge edge1: bipartite.getMaxMatching()){
-            for (DrawableEdge edge2: edges){
-                if (edge2.equals(edge1)){
+    public void setDefault() {
+        for (Edge edge1 : bipartite.getMaxMatching()) {
+            for (DrawableEdge edge2 : edges) {
+                if (edge2.equals(edge1)) {
                     edge2.color = Color.BLACK;
                 }
             }
         }
     }
 
-    public void setMaxMatching(){
-        for (Edge edge1: bipartite.getMaxMatching()){
-            for (DrawableEdge edge2: edges){
-                if (edge2.equals(edge1)){
+    public void setMaxMatching() {
+        for (Edge edge1 : bipartite.getMaxMatching()) {
+            for (DrawableEdge edge2 : edges) {
+                if (edge2.equals(edge1)) {
                     edge2.color = Color.RED;
                 }
             }
@@ -131,10 +132,10 @@ class BoardEdge extends Board {
             int ind_user = findIndex(bipartite.getFirstSide(), edge.getFirstNode().getItemData().id);
             int ind_group = findIndex(bipartite.getSecondSide(), edge.getSecondNode().getItemData().id);
             g.setColor(edge.color);
-            if(g.getColor() == Color.RED)
+            if (g.getColor() == Color.RED)
                 System.out.println(edge.toString());
             for (int i = 0; i < 3; ++i)
-                g.drawLine(ind_user * userBoard.dx + 25 + userBoard.offsetX+i, 0, ind_group * groupBoard.dx + 25 + groupBoard.offsetX+i, 300);
+                g.drawLine(ind_user * userBoard.dx + 25 + userBoard.offsetX + i, 0, ind_group * groupBoard.dx + 25 + groupBoard.offsetX + i, 300);
         }
         System.out.println(edges.size());
     }
@@ -157,8 +158,9 @@ class BoardEdge extends Board {
     }
 }
 
-class DrawableEdge extends Edge{
+class DrawableEdge extends Edge {
     Color color;
+
     public DrawableEdge(Edge e, Color clr) {
         super(e.getFirstNode(), e.getSecondNode());
         color = clr;
