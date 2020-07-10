@@ -125,3 +125,4 @@ class ButtonPanel extends JPanel {
         add(Box.createHorizontalStrut(10));
         add(erase);
     }
+}
