@@ -92,24 +92,24 @@ public class VisualWindow extends JDialog {
         consLayout.ipady = buttonPanel.getHeight();
         gbl.setConstraints(buttonPanel, consLayout);
         add(buttonPanel);
-        buttonPanel.maxMatching.addActionListener((ActionEvent e) -> {
+        buttonPanel.toEnd.addActionListener((ActionEvent e) -> {
             edgeBoard.setMaxMatching();
             edgeBoard.repaint();
-            buttonPanel.maxMatching.setEnabled(false);
+            buttonPanel.toEnd.setEnabled(false);
         });
-        buttonPanel.erase.addActionListener((ActionEvent e) -> {
+        buttonPanel.toBegin.addActionListener((ActionEvent e) -> {
             edgeBoard.setDefault();
             edgeBoard.repaint();
             bip.resetMatching();
             mediator.reset();
-            buttonPanel.step.setEnabled(true);
-            buttonPanel.maxMatching.setEnabled(false);
+            buttonPanel.stepForward.setEnabled(true);
+            buttonPanel.toEnd.setEnabled(false);
         });
-        buttonPanel.step.addActionListener((ActionEvent e) ->{
+        buttonPanel.stepForward.addActionListener((ActionEvent e) ->{
             bip.nextStep(mediator);
         });
 
-        buttonPanel.maxMatching.setEnabled(false);
+        buttonPanel.toEnd.setEnabled(false);
     }
 
     public ButtonPanel getButtonPanel() {
@@ -129,4 +129,3 @@ public class VisualWindow extends JDialog {
     }
 
 }
-
