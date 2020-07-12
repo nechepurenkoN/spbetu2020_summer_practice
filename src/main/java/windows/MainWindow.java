@@ -4,15 +4,15 @@ import algo.Bipartite;
 import com.vk.api.sdk.exceptions.ApiException;
 import com.vk.api.sdk.exceptions.ApiParamException;
 import com.vk.api.sdk.exceptions.ClientException;
-import parser.Parser;
 import parser.ParserFacade;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 
 public class MainWindow extends JFrame {
     private final GridBagLayout gbl = new GridBagLayout();
@@ -43,7 +43,7 @@ public class MainWindow extends JFrame {
         setGreeting();
         setInputPanel();
         setButtonStart();
-        setAuthors();
+        setMenu();
         setBackground(Color.white);
         setVisible(true);
     }
@@ -61,8 +61,7 @@ public class MainWindow extends JFrame {
 
     private void setCustomSize() {
         Toolkit tk = Toolkit.getDefaultToolkit();
-        setBounds(tk.getScreenSize().width / 2 - 300, tk.getScreenSize().height / 2 - 200, 600, 400);
-        setMinimumSize(new Dimension(600, 400));
+        setBounds(tk.getScreenSize().width / 2 - 300, tk.getScreenSize().height / 2 - 220, 600, 440);
         setResizable(false);
     }
 
@@ -120,49 +119,25 @@ public class MainWindow extends JFrame {
         }
     }
 
-    private void setAuthors(){
-        Authors authors = new Authors();
-        consLayout.anchor=GridBagConstraints.SOUTH;
-        consLayout.fill = GridBagConstraints.HORIZONTAL;
-        consLayout.gridheight = 1;
-        consLayout.gridwidth = GridBagConstraints.REMAINDER;
-        consLayout.gridx = 1;
-        consLayout.gridy = GridBagConstraints.RELATIVE;
-        consLayout.ipadx = authors.getWidth();
-        consLayout.ipady = authors.getHeight();
-        gbl.setConstraints(authors, consLayout);
-        add(authors);
+    private void setMenu(){
+        MenuBar menuBar = new MenuBar();
+        setJMenuBar(menuBar);
+//        Authors authors = new Authors();
+//        consLayout.anchor=GridBagConstraints.SOUTH;
+//        consLayout.fill = GridBagConstraints.HORIZONTAL;
+//        consLayout.gridheight = 1;
+//        consLayout.gridwidth = GridBagConstraints.REMAINDER;
+//        consLayout.gridx = 1;
+//        consLayout.gridy = GridBagConstraints.RELATIVE;
+//        consLayout.ipadx = authors.getWidth();
+//        consLayout.ipady = authors.getHeight();
+//        gbl.setConstraints(authors, consLayout);
+//        add(authors);
     }
 
 }
 
-class Authors extends JPanel{
-    JLabel nn = new JLabel("Нечепуренко Никита");
-    JLabel ta = new JLabel("Терехов Александр");
-    JLabel tt = new JLabel("Торосян Тимофей");
-    Authors(){
-        goWebsite(nn , "https://github.com/nechepurenkoN", nn.getText());
-        goWebsite(ta , "https://github.com/snchz29", ta.getText());
-        goWebsite(tt , "https://github.com/sandman595", tt.getText());
-        add(nn);
-        add(ta);
-        add(tt);
-    }
-    private void goWebsite(JLabel website, final String url, String text) {
-        website.setText("<html><a href=\"\">"+text+"</a></html>");
-        website.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        website.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                try {
-                    Desktop.getDesktop().browse(new URI(url));
-                } catch (URISyntaxException | IOException ex) {
-                    //It looks like there's a problem
-                }
-            }
-        });
-    }
-}
+
 
 class InputPanel extends JPanel {
     private final JTextField inputLine = new JTextField();

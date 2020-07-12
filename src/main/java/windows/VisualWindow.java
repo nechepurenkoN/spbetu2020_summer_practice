@@ -41,12 +41,13 @@ public class VisualWindow extends JDialog {
         setGroupBoard();
         setButtonPanel();
         setLayout(gbl);
+        setJMenuBar(new MenuBar());
         setVisible(true);
     }
 
     private void setCustomSize() {
         Toolkit tk = Toolkit.getDefaultToolkit();
-        setBounds(tk.getScreenSize().width / 2 - 475, tk.getScreenSize().height / 2 - 300, 950, 700);
+        setBounds(tk.getScreenSize().width / 2 - 475, tk.getScreenSize().height / 2 - 320, 950, 700);
         setResizable(false);
     }
 

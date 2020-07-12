@@ -44,6 +44,6 @@ class CustomButton extends JButton{
         super();
         setBackground(Color.white);
         setIcon(new ImageIcon(img_path));
-        setBorder(new RoundedBorder(1));
+        setBorder(BorderFactory.createEmptyBorder());
     }
 }
