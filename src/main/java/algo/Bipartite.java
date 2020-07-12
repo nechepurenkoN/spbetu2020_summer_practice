@@ -8,10 +8,13 @@ import java.util.Map;
 import parser.MatchingData;
 import utils.Mediator;
 
+/** Bipartite class represents Bipartite graph (two sided)
+ * @author nechepurenkon
+ */
 public class Bipartite {
     /**
-     *
-     *
+     *  Store graph as mapping from node to list of semi edges
+     *  ex. (a) -> [(b..), (c..), ..]
      */
     private HashMap<GraphNode, ArrayList<SemiEdge>> listOfEdges;
     private ArrayList<GraphNode> firstSide;
@@ -19,12 +22,21 @@ public class Bipartite {
 
     private HashMap<GraphNode, GraphNode> resultMatching;
 
+    /**
+     *
+     * @param data - array with prepared data for building listOfEdges
+     */
     public Bipartite(ArrayList<MatchingData> data) {
         listOfEdges = new HashMap<>();
         resultMatching = new HashMap<>();
         initializeAll(data);
     }
 
+    /** Convertation between graph representation formats
+     *
+     * @param matching HashMap
+     * @return Array of Edges
+     */
     public static ArrayList<Edge> getMatchingList(HashMap<GraphNode, GraphNode> matching) {
         ArrayList<Edge> result = new ArrayList<>();
         for (Map.Entry<GraphNode, GraphNode> currentEdge : matching.entrySet()) {
@@ -56,7 +68,11 @@ public class Bipartite {
         resultMatching = new HashMap<>();
     }
 
-
+    /** Adds an edge between two nodes in max matching
+     *
+     * @param lhs
+     * @param rhs
+     */
     public void setResultMatching(GraphNode lhs, GraphNode rhs) {
         resultMatching.put(lhs, rhs);
     }
@@ -97,7 +113,10 @@ public class Bipartite {
         return builder.toString();
     }
 
-
+    /** Perform one iteration of Kunh's algorithm
+     *
+     * @param mediator - object, that connect algrorithm steps and graphic visualization
+     */
     private void getMaxMatchingIteration(Mediator mediator) {
         int i = mediator.getCurrentStep();
 
@@ -154,7 +173,7 @@ public class Bipartite {
     }
 
     public void setResultMatchingMap(HashMap<GraphNode, GraphNode> prevMatching) {
-        resultMatching = prevMatching;
+        resultMatching = new HashMap<>(prevMatching);
     }
 
     public void toBegin(Mediator mediator) {

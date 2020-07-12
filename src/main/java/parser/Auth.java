@@ -18,6 +18,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/** Class that provides access to UserActor vk api
+ * @author nechepurenkon
+ */
 public class Auth {
 
     private final String CONFIG_PATH = "app.config";
@@ -41,6 +44,7 @@ public class Auth {
         );
     }
 
+    @Deprecated
     private String getUserAccessToken() {
         String authorizeResponseBody = getResponse(getFirstRequestURIString()).body();
         String[] authRequestParams = getRequestParams(authorizeResponseBody);
@@ -50,6 +54,7 @@ public class Auth {
         return new String("");
     }
 
+    @Deprecated
     private HttpResponse<String> getResponse(String uriString) {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
@@ -68,6 +73,7 @@ public class Auth {
         return response;
     }
 
+    @Deprecated
     private String getAuthURIString(String[] authRequestParams) {
         return new String("https://login.vk.com/?act=login&soft=1&utf8=1"+
                 "&q=1"+
@@ -81,6 +87,7 @@ public class Auth {
                 "&pass="+authData.getUserPassword());
     }
 
+    @Deprecated
     private String[] getRequestParams(String authorizeResponseBody) {
         List<String> allMatches = new ArrayList<String>();
         Matcher m = Pattern.compile("name=\"(.*?)\" value=\"(.*?)\"")
@@ -96,12 +103,13 @@ public class Auth {
         return params;
     }
 
+    @Deprecated
     private String getResponseParamValue(String nameValueString) {
         String temp = nameValueString.split("=\"")[2];
         return temp.substring(0, temp.length() - 1);
     }
 
-
+    @Deprecated
     private String getFirstRequestURIString() {
         return new String("https://oauth.vk.com/authorize?" +
                 "client_id="+ authData.getAppId() +
@@ -133,12 +141,17 @@ public class Auth {
 
 }
 
+/** Class that stores application credentials to authorize vk api
+ * @author nechepurenkon
+ */
 class AuthData {
 
     private Integer appId;
     private String secureKey;
     private String serviceToken;
+    @Deprecated
     private String userLogin;
+    @Deprecated
     private String userPassword;
     private String userAccessToken;
 
@@ -154,10 +167,12 @@ class AuthData {
         return serviceToken;
     }
 
+    @Deprecated
     public String getUserLogin() {
         return userLogin;
     }
 
+    @Deprecated
     public String getUserPassword() {
         return userPassword;
     }
@@ -173,14 +188,13 @@ class AuthData {
             appId = Integer.valueOf(reader.readLine());
             secureKey = reader.readLine();
             serviceToken = reader.readLine();
-            //userLogin = reader.readLine();
-            //userPassword = decryptPassword(reader.readLine());
             userAccessToken = reader.readLine();
         } catch(IOException ex) {
             ex.printStackTrace();
         }
     }
 
+    @Deprecated
     private String decryptPassword(String encrypted) {
         byte[] keyBytes = getKey();
         byte[] passwordBytes = getPasswordBytes(encrypted);
@@ -191,19 +205,19 @@ class AuthData {
         return passwordBuilder.toString();
     }
 
+    @Deprecated
     private byte[] getPasswordBytes(String encrypted) {
         String[] splittedChunks = encrypted.split("\\s+");
         byte[] passwordBytes = new byte[splittedChunks.length];
         for (int i = 0; i < passwordBytes.length; i++) {
-            passwordBytes[i] = Byte.valueOf(splittedChunks[i]);
+            passwordBytes[i] = Byte.parseByte(splittedChunks[i]);
         }
         return passwordBytes;
     }
 
+    @Deprecated
     private byte[] getKey() {
-        StringBuilder builder = new StringBuilder();
-        builder.append(System.getenv("processor_revision")).append("88");
-        return builder.toString().getBytes();
+        return (System.getenv("processor_revision") + "88").getBytes();
     }
 
 }

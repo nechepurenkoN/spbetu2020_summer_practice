@@ -4,17 +4,19 @@ import algo.GraphNode;
 import algo.SemiEdge;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
+/** Class that prepares response data to build graph
+ * @author nechepurenkon
+ */
 public class MatchingData {
-    private ItemData self;
-    private ArrayList<ItemData> dataList;
+    private final ItemData self;
+    private final ArrayList<ItemData> dataList;
 
     public MatchingData(ItemData self, ItemData[] dataList) {
         this.self = self;
         this.dataList = new ArrayList<>();
-        for (int i = 0; i < dataList.length; i++){
-            this.dataList.add(dataList[i]);
-        }
+        Collections.addAll(this.dataList, dataList);
     }
 
     public GraphNode getKeyNode() {

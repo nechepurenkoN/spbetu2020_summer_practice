@@ -2,9 +2,12 @@ package algo;
 
 import java.util.Objects;
 
+/** Edge class to store pair of Vertexes
+ * @author nechepurenkon
+ */
 public class Edge {
-    private GraphNode firstNode;
-    private GraphNode secondNode;
+    private final GraphNode firstNode;
+    private final GraphNode secondNode;
 
     public Edge(GraphNode firstNode, GraphNode secondNode) {
         this.firstNode = firstNode;

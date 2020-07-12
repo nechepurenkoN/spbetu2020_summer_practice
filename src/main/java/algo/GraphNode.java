@@ -1,10 +1,12 @@
 package algo;
 
 import parser.ItemData;
-import utils.Mediator;
 
 import java.util.Objects;
 
+/** Class to store graph Vertex, with ability to visit
+ * @author nechepurenkon
+ */
 public class GraphNode {
     private final ItemData data;
 

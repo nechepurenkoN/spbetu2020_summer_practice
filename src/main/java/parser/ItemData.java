@@ -2,6 +2,9 @@ package parser;
 
 import java.util.Objects;
 
+/** Structure to store user/community info
+ * @author nechepurenkon
+ */
 public class ItemData {
     public Integer id;
     public String name;

@@ -6,8 +6,12 @@ import windows.VisualWindow;
 
 import java.awt.*;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Stack;
 
+/** Mediator between graph and VisualWindow
+ * @author nechepurenkon
+ */
 public class Mediator {
     VisualWindow window;
     Bipartite graph;
@@ -54,6 +58,11 @@ public class Mediator {
         passCurrentMatching(graph.getMaxMatching(), Color.YELLOW);
     }
 
+    /** Draws current matching
+     *
+     * @param maxMatching - current matching to draw
+     * @param color
+     */
     public void passCurrentMatching(HashMap<GraphNode, GraphNode> maxMatching, Color color) {
         window.getEdgeBoard().setMaxMatching(Bipartite.getMatchingList(maxMatching), color);
         window.getEdgeBoard().repaint();
@@ -80,5 +89,16 @@ public class Mediator {
         HashMap<GraphNode, GraphNode> prevMatching = matchingStateStack.peek();
         graph.setResultMatchingMap(prevMatching);
         passCurrentMatching(prevMatching);
+    }
+
+    @Deprecated
+    public void log() {
+        System.out.println("Loop: " + loopStep + ", stacksize: " + matchingStateStack.size());
+        for (HashMap<GraphNode, GraphNode> hm : matchingStateStack) {
+            for (Map.Entry<GraphNode, GraphNode> kv : hm.entrySet()) {
+                System.out.println(kv.getKey() + " " + kv.getValue());
+            }
+            System.out.println("----");
+        }
     }
 }

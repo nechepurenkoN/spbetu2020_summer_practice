@@ -8,6 +8,9 @@ import com.vk.api.sdk.objects.users.UserXtrCounters;
 import java.util.ArrayList;
 import java.util.List;
 
+/** Facade to make some sequence of requests
+ * @author nechepurenkon
+ */
 public class ParserFacade {
     private final Parser parser;
 
