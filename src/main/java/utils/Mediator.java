@@ -1,50 +1,84 @@
 package utils;
 
-import algo.Edge;
+import algo.Bipartite;
+import algo.GraphNode;
 import windows.VisualWindow;
 
 import java.awt.*;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Stack;
 
 public class Mediator {
     VisualWindow window;
+    Bipartite graph;
     Integer loopStep;
+    Stack<HashMap<GraphNode, GraphNode>> matchingStateStack;
 
-    public Mediator(VisualWindow window) {
+    public Mediator(VisualWindow window, Bipartite graph) {
         this.window = window;
+        this.graph = graph;
         loopStep = 0;
+        matchingStateStack = new Stack<>();
     }
 
     public void reset() {
         loopStep = 0;
+        matchingStateStack.clear();
+        graph.setResultMatchingMap(new HashMap<>());
     }
 
     public void inc() {
         loopStep++;
     }
 
+    public void dec() { loopStep--; }
+
     public int getCurrentStep() {
         return loopStep;
     }
 
-    public void stop() {
-        reset();
-        window.setButtonActive(window.getButtonPanel().getMaxMatching());
-        window.setButtonInActive(window.getButtonPanel().getStep());
+    public void end() {
+        window.getButtonPanel().getStepForward().setEnabled(false);
+        window.getButtonPanel().getToEnd().setEnabled(false);
+        window.getButtonPanel().getToBegin().setEnabled(true);
+        window.getButtonPanel().getStepBack().setEnabled(true);
+        passCurrentMatching(graph.getMaxMatching(), Color.RED);
     }
 
-    public void passCurrentMatching(ArrayList<Edge> maxMatching) {
-        window.getEdgeBoard().setMaxMatching(maxMatching, Color.YELLOW);
+    public void begin() {
+        reset();
+        window.getButtonPanel().getStepBack().setEnabled(false);
+        window.getButtonPanel().getToBegin().setEnabled(false);
+        window.getButtonPanel().getStepForward().setEnabled(true);
+        window.getButtonPanel().getToEnd().setEnabled(true);
+        passCurrentMatching(graph.getMaxMatching(), Color.YELLOW);
+    }
+
+    public void passCurrentMatching(HashMap<GraphNode, GraphNode> maxMatching, Color color) {
+        window.getEdgeBoard().setMaxMatching(Bipartite.getMatchingList(maxMatching), color);
         window.getEdgeBoard().repaint();
     }
 
-    public void drawTemporaryEdge(Edge temporaryEdge) {
-        window.getEdgeBoard().drawEdge(temporaryEdge, Color.BLUE);
-        try {
-            Thread.sleep(800);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+    public void passCurrentMatching(HashMap<GraphNode, GraphNode> maxMatching) {
+        passCurrentMatching(maxMatching, Color.YELLOW);
+    }
+
+    public void stepForward() {
+        HashMap<GraphNode, GraphNode> newMatching = new HashMap<>(graph.getMaxMatching());
+        matchingStateStack.push(newMatching);
+        inc();
+        passCurrentMatching(newMatching);
+    }
+
+    public void stepBack() {
+        dec();
+        if (loopStep == 0) {
+            begin();
+            return;
         }
-        window.getEdgeBoard().drawEdge(temporaryEdge, Color.BLACK);
+        matchingStateStack.pop();
+        HashMap<GraphNode, GraphNode> prevMatching = matchingStateStack.peek();
+        graph.setResultMatchingMap(prevMatching);
+        passCurrentMatching(prevMatching);
     }
 }

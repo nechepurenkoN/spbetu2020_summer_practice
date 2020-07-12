@@ -28,7 +28,7 @@ public class VisualWindow extends JDialog {
         userBoard = new BoardUser(bip);
         groupBoard = new BoardGroup(bip);
         edgeBoard = new BoardEdge(bip, userBoard,groupBoard);
-        mediator = new Mediator(this);
+        mediator = new Mediator(this, bip);
         ImageIcon icon = new ImageIcon("resources/icon.png");
         setModal(true);
         setTitle("Visualization");
@@ -92,24 +92,26 @@ public class VisualWindow extends JDialog {
         consLayout.ipady = buttonPanel.getHeight();
         gbl.setConstraints(buttonPanel, consLayout);
         add(buttonPanel);
-        buttonPanel.maxMatching.addActionListener((ActionEvent e) -> {
-            edgeBoard.setMaxMatching();
-            edgeBoard.repaint();
-            buttonPanel.maxMatching.setEnabled(false);
+
+        buttonPanel.toEnd.addActionListener((ActionEvent e) -> {
+            bip.toEnd(mediator);
         });
-        buttonPanel.erase.addActionListener((ActionEvent e) -> {
-            edgeBoard.setDefault();
-            edgeBoard.repaint();
-            bip.resetMatching();
-            mediator.reset();
-            buttonPanel.step.setEnabled(true);
-            buttonPanel.maxMatching.setEnabled(false);
+        buttonPanel.toBegin.addActionListener((ActionEvent e) -> {
+            bip.toBegin(mediator);
         });
-        buttonPanel.step.addActionListener((ActionEvent e) ->{
+        buttonPanel.stepForward.addActionListener((ActionEvent e) ->{
             bip.nextStep(mediator);
+            buttonPanel.toBegin.setEnabled(true);
+            buttonPanel.stepBack.setEnabled(true);
+        });
+        buttonPanel.stepBack.addActionListener((ActionEvent e) -> {
+            bip.prevStep(mediator);
+            buttonPanel.toEnd.setEnabled(true);
+            buttonPanel.stepForward.setEnabled(true);
         });
 
-        buttonPanel.maxMatching.setEnabled(false);
+        buttonPanel.toBegin.setEnabled(false);
+        buttonPanel.stepBack.setEnabled(false);
     }
 
     public ButtonPanel getButtonPanel() {
@@ -129,4 +131,3 @@ public class VisualWindow extends JDialog {
     }
 
 }
-

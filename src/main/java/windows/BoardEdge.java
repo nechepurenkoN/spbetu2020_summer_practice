@@ -33,7 +33,7 @@ public class BoardEdge extends Board {
     }
 
     public void setMaxMatching(){
-        setMaxMatching(bipartite.getMaxMatching(), Color.RED);
+        setMaxMatching(Bipartite.getMatchingList(bipartite.getMaxMatching()), Color.RED);
     }
 
     public void setMaxMatching(ArrayList<Edge> edgeList, Color color) {

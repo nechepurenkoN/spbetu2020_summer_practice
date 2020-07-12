@@ -6,14 +6,14 @@ import utils.Mediator;
 import java.util.Objects;
 
 public class GraphNode {
-    private ItemData data;
+    private final ItemData data;
 
     public GraphNode(ItemData data) {
         this.data = data;
     }
 
-    public Boolean accept(Visitor visitor, Mediator mediator) {
-        return visitor.visit(this, mediator);
+    public Boolean accept(Visitor visitor) {
+        return visitor.visit(this);
     }
 
     public String toString() {

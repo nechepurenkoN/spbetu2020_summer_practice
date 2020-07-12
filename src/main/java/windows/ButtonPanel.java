@@ -4,34 +4,41 @@ import javax.swing.*;
 import java.awt.*;
 
 public class ButtonPanel extends JPanel {
-    JButton step = new JButton("Step");
-    JButton maxMatching = new JButton("Max Matching");
+    JButton toEnd = new JButton(">>");
+    JButton toBegin = new JButton("<<");
+    JButton stepForward = new JButton(">");
+    JButton stepBack = new JButton("<");
 
-    public JButton getStep() {
-        return step;
+    public JButton getToEnd() {
+        return toEnd;
     }
 
-    public JButton getMaxMatching() {
-        return maxMatching;
+    public JButton getToBegin() {
+        return toBegin;
     }
 
-    public JButton getErase() {
-        return erase;
+    public JButton getStepForward() {
+        return stepForward;
     }
 
-    JButton erase = new JButton("Erase");
+    public JButton getStepBack() {
+        return stepBack;
+    }
 
     ButtonPanel() {
         super();
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         setPreferredSize(new Dimension(50, 10));
-        step.setBorder(new RoundedBorder(10));
-        maxMatching.setBorder(new RoundedBorder(10));
-        erase.setBorder(new RoundedBorder(10));
-        add(step);
+        stepForward.setBorder(new RoundedBorder(10));
+        stepBack.setBorder(new RoundedBorder(10));
+        toEnd.setBorder(new RoundedBorder(10));
+        toBegin.setBorder(new RoundedBorder(10));
+        add(toBegin);
         add(Box.createHorizontalStrut(10));
-        add(maxMatching);
+        add(stepBack);
         add(Box.createHorizontalStrut(10));
-        add(erase);
+        add(stepForward);
+        add(Box.createHorizontalStrut(10));
+        add(toEnd);
     }
 }
