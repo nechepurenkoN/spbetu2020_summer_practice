@@ -8,12 +8,13 @@ import parser.ParserFacade;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.IOException;
 
+/**
+ * Main window class extends JFrame.
+ */
 public class MainWindow extends JFrame {
     private final GridBagLayout gbl = new GridBagLayout();
     private final GridBagConstraints consLayout = new GridBagConstraints();
@@ -27,12 +28,20 @@ public class MainWindow extends JFrame {
     private final JButton startButton = new JButton("Start!");
     private static MainWindow instance;
 
+    /**
+     * Method for singletone.
+     *
+     * @return only one instance of the class.
+     */
     public static MainWindow getInstance() {
         if (instance == null)
             instance = new MainWindow();
         return instance;
     }
 
+    /**
+     * Constructor.
+     */
     private MainWindow() {
         super("Vk Bipartite");
         ImageIcon icon = new ImageIcon("src\\main\\resources\\icon.png");
@@ -48,23 +57,18 @@ public class MainWindow extends JFrame {
         setVisible(true);
     }
 
-    static class StartActionListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            try {
-                MainWindow.getInstance().startVisualisation();
-            } catch (InterruptedException | ClientException | ApiException | IOException interruptedException) {
-                interruptedException.printStackTrace();
-            }
-        }
-    }
-
+    /**
+     * Method for set custom size 600*440 and disable resize
+     */
     private void setCustomSize() {
         Toolkit tk = Toolkit.getDefaultToolkit();
         setBounds(tk.getScreenSize().width / 2 - 300, tk.getScreenSize().height / 2 - 220, 600, 440);
         setResizable(false);
     }
 
+    /**
+     * Method which set greeting label.
+     */
     private void setGreeting() {
         greeting.setHorizontalAlignment(JLabel.CENTER);
         consLayout.anchor = GridBagConstraints.NORTH;
@@ -84,6 +88,9 @@ public class MainWindow extends JFrame {
         add(greeting);
     }
 
+    /**
+     * Method which set panel which contains label and text field.
+     */
     private void setInputPanel() {
         consLayout.gridy = GridBagConstraints.RELATIVE;
         consLayout.gridx = 1;
@@ -95,10 +102,19 @@ public class MainWindow extends JFrame {
         add(inputPanel);
     }
 
+    /**
+     * Method which set button for start visualization.
+     */
     private void setButtonStart() {
         startButton.setBackground(Color.white);
         startButton.setBorder(new RoundedBorder(10));
-        startButton.addActionListener(new StartActionListener());
+        startButton.addActionListener((e) -> {
+            try {
+                MainWindow.getInstance().startVisualisation();
+            } catch (InterruptedException | ClientException | ApiException | IOException interruptedException) {
+                interruptedException.printStackTrace();
+            }
+        });
         consLayout.gridwidth = GridBagConstraints.NONE;
         consLayout.gridx = 1;
         consLayout.gridy = GridBagConstraints.RELATIVE;
@@ -110,6 +126,14 @@ public class MainWindow extends JFrame {
         add(startButton);
     }
 
+    /**
+     * In this method is created bipartite graph and starts visualization window.
+     *
+     * @throws InterruptedException -
+     * @throws ClientException      -
+     * @throws ApiException         -
+     * @throws IOException          -
+     */
     public void startVisualisation() throws InterruptedException, ClientException, ApiException, IOException {
         try {
             Bipartite bip = new Bipartite(new ParserFacade().getMatchingDataList(Integer.valueOf(inputPanel.getText())));
@@ -119,29 +143,24 @@ public class MainWindow extends JFrame {
         }
     }
 
-    private void setMenu(){
+    /**
+     * Method create and set menu bar for window.
+     */
+    private void setMenu() {
         MenuBar menuBar = new MenuBar();
         setJMenuBar(menuBar);
-//        Authors authors = new Authors();
-//        consLayout.anchor=GridBagConstraints.SOUTH;
-//        consLayout.fill = GridBagConstraints.HORIZONTAL;
-//        consLayout.gridheight = 1;
-//        consLayout.gridwidth = GridBagConstraints.REMAINDER;
-//        consLayout.gridx = 1;
-//        consLayout.gridy = GridBagConstraints.RELATIVE;
-//        consLayout.ipadx = authors.getWidth();
-//        consLayout.ipady = authors.getHeight();
-//        gbl.setConstraints(authors, consLayout);
-//        add(authors);
     }
 
 }
 
-
-
+/**
+ * Input panel class contains text field and label. This class extends JPanel.
+ */
 class InputPanel extends JPanel {
     private final JTextField inputLine = new JTextField();
-
+    /**
+     * Constructor.
+     */
     InputPanel() {
         super();
         setPreferredSize(new Dimension(390, 10));
@@ -156,8 +175,10 @@ class InputPanel extends JPanel {
         add(inputLine);
     }
 
+    /**
+     * Key listener for start visualization when enter key pressed.
+     */
     static class StartKeyListener implements KeyListener {
-
         @Override
         public void keyTyped(KeyEvent e) {
         }
@@ -178,6 +199,10 @@ class InputPanel extends JPanel {
         }
     }
 
+    /**
+     * Getter for text in field.
+     * @return id from text field or default id.
+     */
     public String getText() {
         if (inputLine.getText().length() != 0) {
             return inputLine.getText();
@@ -185,4 +210,3 @@ class InputPanel extends JPanel {
         return "147946476";
     }
 }
-
