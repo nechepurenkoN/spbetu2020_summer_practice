@@ -23,6 +23,22 @@ public class ButtonPanel extends JPanel {
         return toBegin;
     }
 
+    public JButton getToEnd() {
+        return toEnd;
+    }
+
+    public JButton getToBegin() {
+        return toBegin;
+    }
+
+    public JButton getStepForward() {
+        return stepForward;
+    }
+
+    public JButton getStepBack() {
+        return stepBack;
+    }
+
     ButtonPanel() {
         super();
         // set layout and size

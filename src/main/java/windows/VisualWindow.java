@@ -1,9 +1,6 @@
 package windows;
 
 import algo.Bipartite;
-import com.vk.api.sdk.exceptions.ApiException;
-import com.vk.api.sdk.exceptions.ClientException;
-import parser.ParserFacade;
 import utils.Mediator;
 
 import javax.swing.*;
@@ -11,7 +8,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 
-public class VisualWindow extends JDialog {
+public class VisualWindow extends JFrame {
     private final GridBagLayout gbl = new GridBagLayout();
     private final GridBagConstraints consLayout = new GridBagConstraints();
     private final ButtonPanel buttonPanel = new ButtonPanel();
@@ -28,9 +25,8 @@ public class VisualWindow extends JDialog {
         userBoard = new BoardUser(bip);
         groupBoard = new BoardGroup(bip);
         edgeBoard = new BoardEdge(bip, userBoard,groupBoard);
-        mediator = new Mediator(this);
-        ImageIcon icon = new ImageIcon("resources/icon.png");
-        setModal(true);
+        mediator = new Mediator(this, bip);
+        ImageIcon icon = new ImageIcon("src\\main\\resources\\icon.png");
         setTitle("Visualization");
         setIconImage(icon.getImage());
         setCustomSize();
@@ -94,23 +90,23 @@ public class VisualWindow extends JDialog {
         gbl.setConstraints(buttonPanel, consLayout);
         add(buttonPanel);
         buttonPanel.toEnd.addActionListener((ActionEvent e) -> {
-            edgeBoard.setMaxMatching();
-            edgeBoard.repaint();
-            buttonPanel.toEnd.setEnabled(false);
+            bip.toEnd(mediator);
         });
         buttonPanel.toBegin.addActionListener((ActionEvent e) -> {
-            edgeBoard.setDefault();
-            edgeBoard.repaint();
-            bip.resetMatching();
-            mediator.reset();
-            buttonPanel.stepForward.setEnabled(true);
-            buttonPanel.toEnd.setEnabled(false);
+            bip.toBegin(mediator);
         });
         buttonPanel.stepForward.addActionListener((ActionEvent e) ->{
             bip.nextStep(mediator);
+            buttonPanel.toBegin.setEnabled(true);
+            buttonPanel.stepBack.setEnabled(true);
         });
-
-        buttonPanel.toEnd.setEnabled(false);
+        buttonPanel.stepBack.addActionListener((ActionEvent e) -> {
+            bip.prevStep(mediator);
+            buttonPanel.toEnd.setEnabled(true);
+            buttonPanel.stepForward.setEnabled(true);
+        });
+        buttonPanel.toBegin.setEnabled(false);
+        buttonPanel.stepBack.setEnabled(false);
     }
 
     public ButtonPanel getButtonPanel() {
@@ -128,5 +124,4 @@ public class VisualWindow extends JDialog {
     public void setButtonInActive(JButton btn) {
         btn.setEnabled(false);
     }
-
 }
