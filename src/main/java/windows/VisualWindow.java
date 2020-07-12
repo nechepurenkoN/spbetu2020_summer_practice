@@ -8,6 +8,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 
+/**
+ * Class for showing visualization algorithm. This class extends JFrame.
+ */
 public class VisualWindow extends JFrame {
     private final GridBagLayout gbl = new GridBagLayout();
     private final GridBagConstraints consLayout = new GridBagConstraints();
@@ -18,13 +21,18 @@ public class VisualWindow extends JFrame {
     private final Bipartite bip;
     private final Mediator mediator;
 
-
+    /**
+     * Constructor.
+     *
+     * @param b Bipartite graph.
+     * @throws IOException -
+     */
     VisualWindow(Bipartite b) throws IOException {
         super();
         bip = b;
         userBoard = new BoardUser(bip);
         groupBoard = new BoardGroup(bip);
-        edgeBoard = new BoardEdge(bip, userBoard,groupBoard);
+        edgeBoard = new BoardEdge(bip, userBoard, groupBoard);
         mediator = new Mediator(this, bip);
         ImageIcon icon = new ImageIcon("src\\main\\resources\\icon.png");
         setTitle("Visualization");
@@ -41,12 +49,18 @@ public class VisualWindow extends JFrame {
         setVisible(true);
     }
 
+    /**
+     * Method for set custom size 950*700 and disable resize
+     */
     private void setCustomSize() {
         Toolkit tk = Toolkit.getDefaultToolkit();
         setBounds(tk.getScreenSize().width / 2 - 475, tk.getScreenSize().height / 2 - 320, 950, 700);
         setResizable(false);
     }
 
+    /**
+     * Method for set canvas for users.
+     */
     private void setUserBoard() {
         consLayout.anchor = GridBagConstraints.NORTH;
         consLayout.fill = GridBagConstraints.HORIZONTAL;
@@ -61,6 +75,9 @@ public class VisualWindow extends JFrame {
         add(userBoard);
     }
 
+    /**
+     * Method for set canvas for edges.
+     */
     private void setEdgeBoard() {
         consLayout.gridx = 1;
         consLayout.gridy = 2;
@@ -70,6 +87,9 @@ public class VisualWindow extends JFrame {
         add(edgeBoard);
     }
 
+    /**
+     * Method for set canvas for groups.
+     */
     private void setGroupBoard() {
         consLayout.gridx = 1;
         consLayout.gridy = 3;
@@ -79,7 +99,10 @@ public class VisualWindow extends JFrame {
         add(groupBoard);
     }
 
-    private void setButtonPanel(){
+    /**
+     * Method for set control buttons and add listeners for them.
+     */
+    private void setButtonPanel() {
         consLayout.gridwidth = GridBagConstraints.NONE;
         consLayout.fill = GridBagConstraints.NONE;
         consLayout.gridx = 1;
@@ -95,7 +118,7 @@ public class VisualWindow extends JFrame {
         buttonPanel.toBegin.addActionListener((ActionEvent e) -> {
             bip.toBegin(mediator);
         });
-        buttonPanel.stepForward.addActionListener((ActionEvent e) ->{
+        buttonPanel.stepForward.addActionListener((ActionEvent e) -> {
             bip.nextStep(mediator);
             buttonPanel.toBegin.setEnabled(true);
             buttonPanel.stepBack.setEnabled(true);
@@ -109,19 +132,18 @@ public class VisualWindow extends JFrame {
         buttonPanel.stepBack.setEnabled(false);
     }
 
+    /**
+     * Getter.
+     * @return button panel.
+     */
     public ButtonPanel getButtonPanel() {
         return buttonPanel;
     }
-
+    /**
+     * Getter.
+     * @return edge board.
+     */
     public BoardEdge getEdgeBoard() {
         return edgeBoard;
-    }
-
-    public void setButtonActive(JButton btn) {
-        btn.setEnabled(true);
-    }
-
-    public void setButtonInActive(JButton btn) {
-        btn.setEnabled(false);
     }
 }

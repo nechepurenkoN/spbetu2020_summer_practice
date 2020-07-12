@@ -7,6 +7,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 
+/**
+ * Custom abstract board for painting.
+ */
 abstract public class Board extends JPanel {
     protected int width = 950;
     Bipartite bipartite;
@@ -16,13 +19,15 @@ abstract public class Board extends JPanel {
         setBackground(Color.white);
         setSize(width, h);
     }
-
-    public void erase() {
-        paintComponent(getGraphics());
-    }
 }
 
+/**
+ * Custom abstract board of nodes for painting.
+ */
 abstract class BoardNode extends Board {
+    /**
+     * Constructor.
+     */
     BoardNode() {
         super(100);
     }
@@ -34,7 +39,15 @@ abstract class BoardNode extends Board {
     protected BufferImagesGroups imagesGroups;
 }
 
+/**
+ * Custom board of users for painting.
+ */
 class BoardUser extends BoardNode {
+    /**
+     * Constructor.
+     * @param bip Bipartite graph.
+     * @throws IOException -
+     */
     BoardUser(Bipartite bip) throws IOException {
         super();
         dx = 160;
@@ -44,6 +57,10 @@ class BoardUser extends BoardNode {
         imagesUsers = new BufferImagesUsers(bip);
     }
 
+    /**
+     * Override method for correct painting.
+     * @param g graphics
+     */
     @Override
     protected void paintComponent(Graphics g) {
         g.setColor(Color.white);
@@ -61,7 +78,15 @@ class BoardUser extends BoardNode {
     }
 }
 
+/**
+ * Custom board of groups for painting.
+ */
 class BoardGroup extends BoardNode {
+    /**
+     * Constructor.
+     * @param bip Bipartite graph.
+     * @throws IOException -
+     */
     BoardGroup(Bipartite bip) throws IOException {
         super();
         dx = 60;
@@ -70,7 +95,10 @@ class BoardGroup extends BoardNode {
         bipartite = bip;
         imagesGroups = new BufferImagesGroups(bip);
     }
-
+    /**
+     * Override method for correct painting.
+     * @param g graphics
+     */
     @Override
     protected void paintComponent(Graphics g) {
         g.setColor(Color.white);
@@ -83,15 +111,27 @@ class BoardGroup extends BoardNode {
     }
 }
 
-
+/**
+ * Class for add to Edge class color field.
+ */
 class DrawableEdge extends Edge {
     Color color;
 
+    /**
+     * Constructor.
+     * @param e edge without color
+     * @param clr color
+     */
     public DrawableEdge(Edge e, Color clr) {
         super(e.getFirstNode(), e.getSecondNode());
         color = clr;
     }
 
+    /**
+     * Equals method
+     * @param obj other
+     * @return True if equals.
+     */
     public boolean equals(Edge obj) {
         return this.getFirstNode().equals(obj.getFirstNode()) && this.getSecondNode().equals(obj.getSecondNode());
     }

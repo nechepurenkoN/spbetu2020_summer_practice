@@ -7,11 +7,20 @@ import algo.GraphNode;
 import java.awt.*;
 import java.util.ArrayList;
 
+/**
+ * Custom class of edges for painting.
+ */
 public class BoardEdge extends Board {
     BoardUser userBoard;
     BoardGroup groupBoard;
     ArrayList<DrawableEdge> edges = new ArrayList<>();
 
+    /**
+     * Constructor.
+     * @param b Bipartite graph
+     * @param ub Object of BoardUser
+     * @param gb Object of BoardGroup
+     */
     BoardEdge(Bipartite b, BoardUser ub, BoardGroup gb) {
         super(300);
         userBoard = ub;
@@ -22,6 +31,9 @@ public class BoardEdge extends Board {
         }
     }
 
+    /**
+     * Method to paint all edges black.
+     */
     public void setDefault(){
         for (Edge edge1: bipartite.getEdges()){
             for (DrawableEdge edge2: edges){
@@ -32,10 +44,11 @@ public class BoardEdge extends Board {
         }
     }
 
-    public void setMaxMatching(){
-        setMaxMatching(Bipartite.getMatchingList(bipartite.getMaxMatching()), Color.RED);
-    }
-
+    /**
+     * Method to paint all edges in edgeList to color.
+     * @param edgeList List of edges
+     * @param color Color
+     */
     public void setMaxMatching(ArrayList<Edge> edgeList, Color color) {
         setDefault();
         for (Edge edge: edgeList){
@@ -43,6 +56,11 @@ public class BoardEdge extends Board {
         }
     }
 
+    /**
+     * Method to paint edge in color.
+     * @param edge .
+     * @param color .
+     */
     public void drawEdge(Edge edge, Color color) {
         for (DrawableEdge drawableEdge: edges){
             if (drawableEdge.equals(edge)){
@@ -51,6 +69,10 @@ public class BoardEdge extends Board {
         }
     }
 
+    /**
+     * Method for output edges to board.
+     * @param g
+     */
     private void drawEdges(Graphics g) {
         for (DrawableEdge edge : edges) {
             int ind_user = findIndex(bipartite.getFirstSide(), edge.getFirstNode().getItemData().id);
@@ -61,6 +83,12 @@ public class BoardEdge extends Board {
         }
     }
 
+    /**
+     * Just linear search.
+     * @param lst Haystack
+     * @param id Needle
+     * @return index first equal.
+     */
     private int findIndex(ArrayList<GraphNode> lst, int id) {
         for (int i = 0; i < lst.size(); ++i) {
             if (lst.get(i).getItemData().id == id) {
@@ -70,6 +98,10 @@ public class BoardEdge extends Board {
         return -1;
     }
 
+    /**
+     * Override method for correct painting.
+     * @param g graphics
+     */
     @Override
     public void paint(Graphics g) {
         super.paint(g);

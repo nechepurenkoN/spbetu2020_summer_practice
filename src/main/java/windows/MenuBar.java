@@ -3,7 +3,13 @@ package windows;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Custom menu.
+ */
 public class MenuBar extends JMenuBar {
+    /**
+     * Constructor.
+     */
     MenuBar(){
         super();
         add(Box.createHorizontalGlue());

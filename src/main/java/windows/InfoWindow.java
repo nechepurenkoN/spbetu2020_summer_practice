@@ -8,9 +8,16 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+/**
+ * Window for show information.
+ */
 public class InfoWindow extends JFrame {
     private static InfoWindow instance;
 
+    /**
+     * Singletone getter.
+     * @return only one instance of the class.
+     */
     public static InfoWindow getInstance() {
         if (instance == null)
             instance = new InfoWindow();
@@ -20,6 +27,9 @@ public class InfoWindow extends JFrame {
         return instance;
     }
 
+    /**
+     * Constructor.
+     */
     private InfoWindow() {
         setIconImage(new ImageIcon("src\\main\\resources\\icon.png").getImage());
         setTitle("Info");
@@ -34,6 +44,9 @@ public class InfoWindow extends JFrame {
     }
 }
 
+/**
+ * Class for labels with clickable links.
+ */
 class Authors extends JPanel {
     JLabel nn = new JLabel("Нечепуренко Никита");
     JLabel ta = new JLabel("Терехов Александр");
@@ -41,6 +54,9 @@ class Authors extends JPanel {
     JLabel repo = new JLabel("GitHub");
     JLabel vk = new JLabel("Вконтакте");
 
+    /**
+     * Constructor.
+     */
     Authors() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         goWebsite(nn, "https://github.com/nechepurenkoN", nn.getText());
@@ -55,6 +71,12 @@ class Authors extends JPanel {
         add(vk);
     }
 
+    /**
+     * Help for constructor.
+     * @param website JLabel object
+     * @param url link
+     * @param text text in link
+     */
     private void goWebsite(JLabel website, final String url, String text) {
         website.setText("<html><a href=\"\">" + text + "</a></html>");
         website.setCursor(new Cursor(Cursor.HAND_CURSOR));

@@ -3,9 +3,16 @@ package windows;
 import javax.swing.border.Border;
 import java.awt.*;
 
+/**
+ * Custom border with rounded angle.
+ */
 class RoundedBorder implements Border {
     private final int radius;
 
+    /**
+     * Constructor.
+     * @param radius radius value.
+     */
     RoundedBorder(int radius) {
         this.radius = radius;
     }
