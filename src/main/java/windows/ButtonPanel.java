@@ -4,10 +4,10 @@ import javax.swing.*;
 import java.awt.*;
 
 public class ButtonPanel extends JPanel {
-    JButton toEnd = new JButton(">>");
-    JButton toBegin = new JButton("<<");
-    JButton stepForward = new JButton(">");
-    JButton stepBack = new JButton("<");
+    CustomButton stepForward = new CustomButton("src\\main\\resources\\step_forward.png");
+    CustomButton stepBack = new CustomButton("src\\main\\resources\\step_back.png");
+    CustomButton toBegin = new CustomButton("src\\main\\resources\\to_begin.png");
+    CustomButton toEnd = new CustomButton("src\\main\\resources\\to_end.png");
 
     public JButton getStep() {
         return stepForward;
@@ -25,12 +25,10 @@ public class ButtonPanel extends JPanel {
 
     ButtonPanel() {
         super();
+        // set layout and size
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         setPreferredSize(new Dimension(50, 10));
-        stepForward.setBorder(new RoundedBorder(10));
-        stepBack.setBorder(new RoundedBorder(10));
-        toEnd.setBorder(new RoundedBorder(10));
-        toBegin.setBorder(new RoundedBorder(10));
+        // add buttons to panel
         add(toBegin);
         add(Box.createHorizontalStrut(10));
         add(stepBack);
@@ -38,5 +36,14 @@ public class ButtonPanel extends JPanel {
         add(stepForward);
         add(Box.createHorizontalStrut(10));
         add(toEnd);
+    }
+}
+
+class CustomButton extends JButton{
+    CustomButton(String img_path){
+        super();
+        setBackground(Color.white);
+        setIcon(new ImageIcon(img_path));
+        setBorder(new RoundedBorder(1));
     }
 }
